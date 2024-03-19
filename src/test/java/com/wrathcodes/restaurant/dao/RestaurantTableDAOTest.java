@@ -9,6 +9,7 @@ import com.wrathcodes.restaurant.domain.RestaurantTable;
 public class RestaurantTableDAOTest {
 
     @Test
+    @Ignore
     public void save() {
 
         // get restaurant

@@ -17,6 +17,7 @@ public class GenericDAO<Entity> {
     // constructor creation
     @SuppressWarnings("unchecked")
     public GenericDAO() {
+
         this.entityClass = (Class<Entity>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
     }
