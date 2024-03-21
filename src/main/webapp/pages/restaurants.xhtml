@@ -25,7 +25,7 @@
 	</h:form>
 
 	<!-- Add Restaurant Modal -->
-	<p:dialog header="Add Restaurant" widgetVar="addRestaurantDialog" modal="true" resizable="false" draggable="false"
+	<p:dialog header="Restaurant - Add" widgetVar="addRestaurantDialog" modal="true" resizable="false" draggable="false"
 		showEffect="fade" hideEffect="fade" closable="false">
 		<h:form>
 			<h:panelGrid columns="1">
@@ -33,7 +33,7 @@
 				<p:inputText maxlength="50" size="30" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<p:commandButton value="Save" />
+				<h:commandButton value="Save" />
 				<p:commandButton value="Close" oncomplete="PF('addRestaurantDialog').hide();" />
 			</h:panelGrid>
 		</h:form>

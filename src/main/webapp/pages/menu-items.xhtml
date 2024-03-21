@@ -5,39 +5,53 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Categories</title>
+	<title>Menu</title>
 </h:head>
 <h:body>
 	<h:form>
-		<p:panel header="Category - List">
-			<p:dataTable emptyMessage="No Category Records Found." paginator="true" paginatorPosition="bottom">
+		<p:panel header="Menu Items">
+			<p:dataTable emptyMessage="No Menu Items Records Found." paginator="true" paginatorPosition="bottom">
 				<f:facet name="header">
-					<p:commandButton value="Add" oncomplete="PF('addCategoryDialog').show();" />
+					<p:commandButton value="Add" oncomplete="PF('addMenuItemDialog').show();" />
 				</f:facet>
-
 				<p:column headerText="Name">
 				</p:column>
 
 				<p:column headerText="Description">
 				</p:column>
+
+				<p:column headerText="Price">
+				</p:column>
+
+				<p:column headerText="Available">
+				</p:column>
+
+
 			</p:dataTable>
 		</p:panel>
 	</h:form>
 
-	<!-- Add Category Modal -->
-	<p:dialog header="Add Category" widgetVar="addCategoryDialog" modal="true" resizable="false" draggable="false"
+	<!-- Add Tables - Modal -->
+	<p:dialog header="Tables - Add" widgetVar="addMenuItemDialog" modal="true" resizable="false" draggable="false"
 		showEffect="fade" hideEffect="fade" closable="false">
 		<h:form>
 			<h:panelGrid columns="2">
 				<h:outputLabel for="name" value="Name" />
-				<p:inputText maxlength="50" size="30" />
+				<p:inputText maxlength="50" size="50" />
 
 				<h:outputLabel for="description" value="Description" />
-				<p:inputTextarea rows="5" cols="30" />
+				<p:inputTextarea rows="5" cols="50" />
+
+				<h:outputLabel for="price" value="Price" />
+				<p:inputText maxlength="7" size="10" />
+
+				<h:outputLabel for="available" value="Available" />
+				<p:selectBooleanCheckbox />
+
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Save" />
-				<p:commandButton value="Close" oncomplete="PF('addCategoryDialog').hide();" />
+				<p:commandButton value="Save" />
+				<p:commandButton value="Close" oncomplete="PF('addMenuItemDialog').hide();" />
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>
