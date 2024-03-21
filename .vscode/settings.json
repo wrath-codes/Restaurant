@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "global",
-        "views"
+        "views",
+        "bean"
     ]
 }
