@@ -33,7 +33,7 @@
 				<p:inputText maxlength="50" size="30" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Save" />
+				<h:commandButton value="Save" actionListener="#{restaurantBean.save}" />
 				<p:commandButton value="Close" oncomplete="PF('addRestaurantDialog').hide();" />
 			</h:panelGrid>
 		</h:form>
