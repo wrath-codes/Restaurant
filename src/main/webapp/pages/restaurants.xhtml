@@ -8,17 +8,27 @@
 	<title>Restaurants</title>
 </h:head>
 <h:body>
+	<p:growl id="restaurantDialogMessage" />
 	<h:form>
 		<p:panel header="Restaurants - List">
-			<p:dataTable emptyMessage="No Restaurants Records Found." paginator="true" paginatorPosition="bottom">
+			<p:dataTable emptyMessage="No Restaurants Records Found." paginator="true" paginatorPosition="bottom"
+				value="#{restaurantBean.restaurants}" var="restaurantCursor" rows="5">
 				<f:facet name="header">
-					<p:commandButton value="Add" oncomplete="PF('addRestaurantDialog').show();" />
+					<p:commandButton value="Add" oncomplete="PF('addRestaurantDialog').show();"
+						actionListener="#{restaurantBean.add}" update=":addRestaurantForm:addRestaurantPanelGrid" />
 				</f:facet>
 
-				<p:column headerText="Name">
+
+				<p:column headerText="Name" sortBy="#{restaurantCursor.name}" filterBy="#{restaurantCursor.name}">
+					<h:outputText value="#{restaurantCursor.name}" />
 				</p:column>
 
 				<p:column headerText="Table Count">
+				</p:column>
+
+				<p:column headerText="Options">
+					<p:commandButton value="Edit" />
+					<p:commandButton value="Delete" />
 				</p:column>
 			</p:dataTable>
 		</p:panel>
@@ -27,14 +37,15 @@
 	<!-- Add Restaurant Modal -->
 	<p:dialog header="Restaurant - Add" widgetVar="addRestaurantDialog" modal="true" resizable="false" draggable="false"
 		showEffect="fade" hideEffect="fade" closable="false">
-		<h:form>
-			<h:panelGrid columns="1">
-				<h:outputLabel for="name" value="Name" />
-				<p:inputText maxlength="50" size="30" />
+		<h:form id="addRestaurantForm">
+			<h:panelGrid columns="1" id="addRestaurantPanelGrid">
+				<p:outputLabel value="Name" />
+				<p:inputText maxlength="50" size="30" value="#{restaurantBean.restaurant.name}" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Save" actionListener="#{restaurantBean.save}" />
-				<p:commandButton value="Close" oncomplete="PF('addRestaurantDialog').hide();" />
+				<p:commandButton value="Save" actionListener="#{restaurantBean.save}"
+					update=":restaurantDialogMessage :addRestaurantForm:addRestaurantPanelGrid" />
+				<p:commandButton value=" Close" oncomplete="PF('addRestaurantDialog').hide();" />
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>

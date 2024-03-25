@@ -102,4 +102,41 @@ public class RestaurantDAOTest {
         }
     }
 
+    @Test
+    @Ignore
+    public void mergeInclude() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName("McDonald's");
+
+        RestaurantDAO restaurantDAO = new RestaurantDAO();
+        restaurantDAO.merge(restaurant);
+
+        System.out.println("Restaurant saved successfully");
+        System.err.println("Record updated:");
+        System.out.println("╭────────────────────────────╮\n" +
+                "│ Code: " + restaurant.getCode() + "\n" +
+                "│ Name: " + restaurant.getName() + "\n" +
+                "╰────────────────────────────╯");
+    }
+
+    @Test
+    @Ignore
+    public void mergeUpdate() {
+        // search the restaurant
+        Long code = 1L;
+        RestaurantDAO restaurantDAO = new RestaurantDAO();
+        Restaurant restaurant = restaurantDAO.search(code);
+
+        // update the restaurant
+        if (restaurant == null) {
+            System.err.println("Record not found");
+        } else {
+            System.err.println("Record found:");
+            System.err.println(restaurant.getName());
+            restaurant.setName("Burger King");
+            restaurantDAO.merge(restaurant);
+            System.err.println("Record updated:");
+            System.err.println(restaurant.getName());
+        }
+    }
 }
