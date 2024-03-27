@@ -26,13 +26,7 @@
 				<configuration> 
 					<source>1.8</source>
 					<target>1.8</target>
-					<argLine>
-							--add-opens java.base/java.time=ALL-UNNAMED
-							--add-opens java.base/java.math=ALL-UNNAMED
-							--add-opens java.base/java.lang=ALL-UNNAMED
-							--add-opens java.base/java.lang.reflect=ALL-UNNAMED
-						</argLine>								
-					</configuration>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

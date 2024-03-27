@@ -9,10 +9,10 @@
 </h:head>
 <h:body>
 	<p:growl id="restaurantDialogMessage" />
-	<h:form>
+	<h:form id="formListRestaurants">
 		<p:panel header="Restaurants - List">
 			<p:dataTable emptyMessage="No Restaurants Records Found." paginator="true" paginatorPosition="bottom"
-				value="#{restaurantBean.restaurants}" var="restaurantCursor" rows="5">
+				value="#{restaurantBean.restaurants}" var="restaurantCursor" rows="5" id="restaurantsDataTable">
 				<f:facet name="header">
 					<p:commandButton value="Add" oncomplete="PF('addRestaurantDialog').show();"
 						actionListener="#{restaurantBean.add}" update=":addRestaurantForm:addRestaurantPanelGrid" />
@@ -27,10 +27,23 @@
 				</p:column>
 
 				<p:column headerText="Options">
-					<p:commandButton value="Edit" />
-					<p:commandButton value="Delete" />
+					<p:commandButton icon="ui-icon-pencil">
+						<p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-trash" actionListener="#{restaurantBean.delete}" update=":restaurantDialogMessage :">
+						<p:confirm header="Confirmation" message="Are you sure?"
+							icon="ui-icon-alert" />
+						<f:attribute name="selectedRestaurant" value="#{restaurantCursor}"/>
+					</p:commandButton>
 				</p:column>
 			</p:dataTable>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 		</p:panel>
 	</h:form>
 
@@ -44,7 +57,7 @@
 			</h:panelGrid>
 			<h:panelGrid columns="2">
 				<p:commandButton value="Save" actionListener="#{restaurantBean.save}"
-					update=":restaurantDialogMessage :addRestaurantForm:addRestaurantPanelGrid" />
+					update=":restaurantDialogMessage :addRestaurantForm:addRestaurantPanelGrid :formListRestaurants:restaurantsDataTable" />
 				<p:commandButton value=" Close" oncomplete="PF('addRestaurantDialog').hide();" />
 			</h:panelGrid>
 		</h:form>

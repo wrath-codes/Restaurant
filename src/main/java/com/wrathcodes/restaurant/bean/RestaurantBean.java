@@ -3,9 +3,10 @@ package com.wrathcodes.restaurant.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
+import javax.annotation.PostConstruct;
 
 import org.omnifaces.util.Messages;
 
@@ -56,7 +57,10 @@ public class RestaurantBean implements Serializable {
         try {
             RestaurantDAO restaurantDAO = new RestaurantDAO();
             restaurantDAO.save(restaurant);
+
             add();
+            restaurants = restaurantDAO.list();
+            
             Messages.addGlobalInfo("Restaurant saved successfully!");
 
         } catch (RuntimeException error) {
@@ -64,4 +68,19 @@ public class RestaurantBean implements Serializable {
             error.printStackTrace();
         }
     }
+    
+	public void delete(ActionEvent event) {
+		try {
+			restaurant = (Restaurant) event.getComponent().getAttributes().get("selectedRestaurant");
+			RestaurantDAO restaurantDAO = new RestaurantDAO();
+
+			restaurantDAO.delete(restaurant);
+			restaurants = restaurantDAO.list();
+			
+			Messages.addGlobalInfo("Restaurant deleted successfully!");
+		} catch (RuntimeException error) {
+			Messages.addGlobalError("Error trying to delete restaurant!");
+			error.printStackTrace();
+		}
+	}
 }
