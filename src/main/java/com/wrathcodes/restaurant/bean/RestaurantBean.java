@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.annotation.PostConstruct;
 
@@ -21,6 +23,8 @@ public class RestaurantBean implements Serializable {
     private List<Restaurant> restaurants;
 
     private Restaurant restaurant;
+    
+    private String code;
 
     public Restaurant getRestaurant() {
         return restaurant;
@@ -36,6 +40,26 @@ public class RestaurantBean implements Serializable {
 
     public void setRestaurants(List<Restaurant> restaurants) {
         this.restaurants = restaurants;
+    }
+    
+    public String getCode() {
+    	        return code;
+    }
+    
+	public void setCode(String code) {
+		this.code = code;
+	}
+    
+    public void init() {
+    	if(code == null) {
+    		Messages.addGlobalError("No restaurant selected!");
+    		return;
+    	} 
+    	restaurant = new RestaurantDAO().search(Long.parseLong(code));
+    	
+		if (restaurant == null) {
+			Messages.addGlobalError("Restaurant not found!");
+		}
     }
 
     @PostConstruct
@@ -56,11 +80,11 @@ public class RestaurantBean implements Serializable {
     public void save() {
         try {
             RestaurantDAO restaurantDAO = new RestaurantDAO();
-            restaurantDAO.save(restaurant);
+            restaurantDAO.merge(restaurant);
 
             add();
             restaurants = restaurantDAO.list();
-            
+
             Messages.addGlobalInfo("Restaurant saved successfully!");
 
         } catch (RuntimeException error) {
@@ -68,19 +92,23 @@ public class RestaurantBean implements Serializable {
             error.printStackTrace();
         }
     }
-    
+
 	public void delete(ActionEvent event) {
 		try {
 			restaurant = (Restaurant) event.getComponent().getAttributes().get("selectedRestaurant");
-			RestaurantDAO restaurantDAO = new RestaurantDAO();
 
+			RestaurantDAO restaurantDAO = new RestaurantDAO();
 			restaurantDAO.delete(restaurant);
 			restaurants = restaurantDAO.list();
-			
+
 			Messages.addGlobalInfo("Restaurant deleted successfully!");
 		} catch (RuntimeException error) {
 			Messages.addGlobalError("Error trying to delete restaurant!");
 			error.printStackTrace();
 		}
+	}
+
+	public void edit(ActionEvent event) {
+		restaurant = (Restaurant) event.getComponent().getAttributes().get("selectedRestaurant");
 	}
 }

@@ -65,21 +65,14 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>5.2</version>	
+			<version>8.0</version>	
 		</dependency>
-		
-		<!-- Add PrimeFaces Theme -->
-		<dependency>
-			<groupId>org.primefaces.extensions</groupId>
-			<artifactId>all-themes</artifactId>
-			<version>1.0.8</version>
-		</dependency>
-		
+
 		<!-- OmniFaces -->
 		<dependency>
 			<groupId>org.omnifaces</groupId>
 			<artifactId>omnifaces</artifactId>
-			<version>1.11</version>
+			<version>1.14.1</version>
 		</dependency>
 	</dependencies>
 </project>

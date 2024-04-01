@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<f:metadata>
+	    <f:viewParam 
+	    name="code" 
+	    value="#{restaurantBean.code}" 
+	    required="true" requiredMessage="O código é obrigatório." 
+	 	/>
+	 	<f:event type="preRenderView" listener="#{restaurantBean.init}" />
+	</f:metadata>
+	
+	<title>#{restaurantBean.getRestaurant().name}</title>
+	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
+</h:head>
+
+<h:body>
+	<p:growl id="dialogMessage" />
+	<div id="geral" class="bg-gray-900 h-screen">
+		<h:form>
+			<div id="sidebar">
+				<p:sidebar widgetVar="sidebar" position="left" baseZIndex="10000">
+					<h1 style="font-weight:normal">#{restaurantBean.getRestaurant().name}</h1>
+				</p:sidebar>
+			</div>
+			<div class="flex space-between">
+				<div class="space-x-2">
+					<p:commandButton icon="pi pi-bars" oncomplete="PF('sidebar').show()" />
+					<p:linkButton outcome="restaurants" icon="pi pi-home"/>
+				</div>
+			</div>
+			<div>
+				<h1 class="text-white text-xl">
+					#{restaurantBean.getRestaurant().name}
+				</h1>
+			</div>
+		</h:form>
+	</div>
+</h:body>
+</html>
