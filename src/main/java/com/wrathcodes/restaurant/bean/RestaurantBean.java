@@ -1,97 +1,107 @@
 package com.wrathcodes.restaurant.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.annotation.PostConstruct;
 
 import org.omnifaces.util.Messages;
 
 import com.wrathcodes.restaurant.dao.RestaurantDAO;
+import com.wrathcodes.restaurant.dao.RestaurantTableDAO;
 import com.wrathcodes.restaurant.domain.Restaurant;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 @SuppressWarnings("serial")
 public class RestaurantBean implements Serializable {
-    RestaurantBean restaurantBean;
-    private List<Restaurant> restaurants;
+	private List<Restaurant> restaurants;
 
-    private Restaurant restaurant;
-    
-    private String code;
+	private Restaurant restaurant;
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
+	private String code;
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
+	private Restaurant restaurantSelected;
 
-    public List<Restaurant> getRestaurants() {
-        return restaurants;
-    }
+	public Restaurant getRestaurantSelected() {
+		return restaurantSelected;
+	}
 
-    public void setRestaurants(List<Restaurant> restaurants) {
-        this.restaurants = restaurants;
-    }
-    
-    public String getCode() {
-    	        return code;
-    }
-    
+	public void setRestaurantSelected(Restaurant restaurantSelected) {
+		this.restaurantSelected = restaurantSelected;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public List<Restaurant> getRestaurants() {
+		return restaurants;
+	}
+
+	public void setRestaurants(List<Restaurant> restaurants) {
+		this.restaurants = restaurants;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
 	public void setCode(String code) {
 		this.code = code;
 	}
-    
-    public void init() {
-    	if(code == null) {
-    		Messages.addGlobalError("No restaurant selected!");
-    		return;
-    	} 
-    	restaurant = new RestaurantDAO().search(Long.parseLong(code));
-    	
-		if (restaurant == null) {
-			Messages.addGlobalError("Restaurant not found!");
+
+	public void view(Restaurant restaurant) throws IOException {
+		RestaurantDAO restaurantDAO = new RestaurantDAO();
+		restaurantSelected = restaurantDAO.search(restaurant.getCode());
+		FacesContext.getCurrentInstance().getExternalContext()
+				.redirect("/Restaurant/pages/restaurant.xhtml" + "?code=" + restaurantSelected.getCode());
+	}
+
+	public Integer tableCount(Long code) {
+		RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
+		return restaurantTableDAO.list(code).size();
+	}
+
+	@PostConstruct
+	public void list() {
+		try {
+			RestaurantDAO restaurantDAO = new RestaurantDAO();
+			restaurants = restaurantDAO.list();
+		} catch (RuntimeException error) {
+			Messages.addGlobalError("Error trying to list restaurants!");
+			error.printStackTrace();
 		}
-    }
+	}
 
-    @PostConstruct
-    public void list() {
-        try {
-            RestaurantDAO restaurantDAO = new RestaurantDAO();
-            restaurants = restaurantDAO.list();
-        } catch (RuntimeException error) {
-            Messages.addGlobalError("Error trying to list restaurants!");
-            error.printStackTrace();
-        }
-    }
+	public void add() {
+		restaurant = new Restaurant();
+	}
 
-    public void add() {
-        restaurant = new Restaurant();
-    }
+	public void save() {
+		try {
+			RestaurantDAO restaurantDAO = new RestaurantDAO();
+			restaurantDAO.merge(restaurant);
 
-    public void save() {
-        try {
-            RestaurantDAO restaurantDAO = new RestaurantDAO();
-            restaurantDAO.merge(restaurant);
+			add();
+			restaurants = restaurantDAO.list();
 
-            add();
-            restaurants = restaurantDAO.list();
+			Messages.addGlobalInfo("Restaurant saved successfully!");
 
-            Messages.addGlobalInfo("Restaurant saved successfully!");
-
-        } catch (RuntimeException error) {
-            Messages.addGlobalError("Error trying to save restaurant!");
-            error.printStackTrace();
-        }
-    }
+		} catch (RuntimeException error) {
+			Messages.addGlobalError("Error trying to save restaurant!");
+			error.printStackTrace();
+		}
+	}
 
 	public void delete(ActionEvent event) {
 		try {
