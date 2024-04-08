@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    template="/templates/restaurant_model.xhtml">
+
+    <ui:define name="titleRestaurant">
+        <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
+        <title>#{restaurantBean.restaurantSelected.name} -
+            Tables</title>
+    </ui:define>
+
+    <ui:define name="content-restaurant">
+        <div id="geral" class="bg-gray-900 h-screen">
+            <h:form>
+                <div class="flex space-between">
+                    <div class="space-x-2"></div>
+                    <div class="space-x-2">
+                        <h:outputText
+                            value="#{restaurantBean.restaurantSelected.name} Table list" />
+
+                        <h:form id="formListTables" class="py-5">
+                            <p:panel
+                                header="#{restaurantBean.restaurantSelected.name} - Tables">
+                                <p:dataTable
+                                    emptyMessage="No tables fond for #{restaurantBean.restaurantSelected.name}."
+                                    paginator="true"
+                                    paginatorPosition="bottom"
+                                    value="#{restaurantTableBean.list(restaurantBean.restaurantSelected.code)}"
+                                    var="tableCursor" rows="5"
+                                    id="tablesDataTable">
+                                    <f:facet name="header">
+                                        <p:commandButton value="Add"
+                                            oncomplete="PF('addTableDialog').show();"
+                                            actionListener="#{restaurantTableBean.add}"
+                                            update=":addTableForm:addTablePanelGrid">
+                                            <f:actionListener
+                                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                        </p:commandButton>
+                                    </f:facet>
+
+
+                                    <p:column headerText="Name"
+                                        sortBy="#{tableCursor.number}"
+                                        filterBy="#{tableCursor.name}">
+                                        <h:outputText
+                                            value="#{tableCursor.name}" />
+                                    </p:column>
+
+                                    <p:column headerText="Options">
+
+                                        <p:commandButton
+                                            icon="pi pi-pencil"
+                                            style="margin-right: 5px; margin-left: 5px;"
+                                            actionListener="#{restaurantBean.edit}"
+                                            update=":addRestaurantForm:addRestaurantPanelGrid"
+                                            oncomplete="PF('addRestaurantDialog').show();">
+                                            <f:attribute
+                                                name="selectedRestaurant"
+                                                value="#{restaurantCursor}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton
+                                            icon="pi pi-trash"
+                                            style="margin-right: 5px; margin-left: 5px;"
+                                            actionListener="#{restaurantBean.delete}"
+                                            update=":dialogMessage :formListTables:tablesDataTable">
+                                            <p:confirm
+                                                header="Confirmation"
+                                                message="Are you sure?"
+                                                icon="ui-icon-alert" />
+                                            <f:attribute
+                                                name="selectedTable"
+                                                value="#{tableCursor}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:confirmDialog global="true"
+                                    showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes"
+                                        type="button"
+                                        styleClass="ui-confirmdialog-yes"
+                                        icon="ui-icon-check" />
+                                    <p:commandButton value="No"
+                                        type="button"
+                                        styleClass="ui-confirmdialog-no"
+                                        icon="ui-icon-close" />
+                                </p:confirmDialog>
+                            </p:panel>
+                        </h:form>
+
+                        <!-- Add Restaurant Modal -->
+                        <p:dialog header="Table - Add"
+                            widgetVar="addTableDialog" modal="true"
+                            resizable="false" draggable="false"
+                            showEffect="fade" hideEffect="fade"
+                            closable="false">
+                            <h:form id="addTableForm">
+                                <h:panelGrid columns="1"
+                                    id="addTablePanelGrid">
+                                    <p:outputLabel value="Name" />
+                                    <p:inputText id="numero"
+                                        maxlength="3" size="10"
+                                        value="#{restaurantTableBean.restaurantTable.number}"
+                                        required="true"
+                                        requiredMessage="O campo Numero é obrigatório." />
+                                    <p:outputLabel value="Available" />
+                                    <p:inputText id="available"
+                                        maxlength="3" size="10"
+                                        value="#{restaurantTableBean.restaurantTable.available}"
+                                        required="true"
+                                        requiredMessage="O campo available é obrigatório." />
+                                    <p:outputLabel value="Capacity" />
+                                    <p:inputText id="capacity"
+                                        maxlength="3" size="10"
+                                        value="#{restaurantTableBean.restaurantTable.capacity}"
+                                        required="true"
+                                        requiredMessage="O campo capacity é obrigatório." />
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Save"
+                                        actionListener="#{restaurantTableBean.save}"
+                                        update=":dialogMessage :addTableForm:addTablePanelGrid :formListTables:tablesDataTable" />
+                                    <p:commandButton value=" Close"
+                                        oncomplete="PF('addTableForm').hide();" />
+                                </h:panelGrid>
+                            </h:form>
+                        </p:dialog>
+
+
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

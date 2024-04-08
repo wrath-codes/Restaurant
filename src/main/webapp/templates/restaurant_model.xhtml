@@ -25,40 +25,64 @@
     </ui:insert>
 </h:head>
 
-<h:body class=" bg-gray-900 min-h-screen">
+<h:body class=" bg-gray-900 h-max">
     <p:growl id="dialogMessage" />
-    <div class="ui-g text-white">
+    <div class="ui-g ">
         <div class="ui-g-12 ui-md-2">
             <h:form>
-                <p:menu>
-                    <p:submenu
-                        label="#{restaurantBean.restaurantSelected.name}">
-                        <p:menuitem value="Restaurant Info"
-                            icon="fa fa-store" />
-                        <p:menuitem value="Active Menus"
-                            icon="fa fa-clipboard-list" />
-                        <p:menuitem value="Menu Items"
-                            icon="fa fa-utensils" />
-                        <p:menuitem value="Ingredients"
-                            icon="fa fa-seedling" />
+                <p:megaMenu orientation="vertical" autoDisplay="false">
+                    <p:menuitem value="Home"
+                        url="/Restaurant/pages/restaurants.xhtml"
+                        icon="fa fa-home" />
+                    <p:separator />
+                    <p:menuitem value="Overview"
+                        url="/Restaurant/pages/restaurants.xhtml"
+                        icon="fa fa-chart-line" />
+
+
+                    <p:submenu label="Orders" icon="fa fa-tasks">
+                        <p:column>
+                            <p:submenu label="Options">
+                                <p:menuitem value="New Order" url="#" icon="fa fa-plus-circle" />
+                                <p:menuitem value="Cancel Order" url="#" icon="fa fa-minus-circle" />
+                                <p:menuitem value="Orders" url="#" icon="fa fa-list" />
+                            </p:submenu>
+                        </p:column>
                     </p:submenu>
 
-                    <p:submenu label="Clientele">
-                        <p:menuitem value="Tables" icon="fa fa-ring" />
-                        <p:menuitem value="Customers"
-                            icon="fa fa-user-friends" />
+                    <p:submenu label="Customers"
+                        icon="fa fa-user-friends">
+                        <p:column>
+                            <p:submenu label="Options">
+                                <p:menuitem value="New Customer" url="#" icon="fa fa-user-plus" />
+                                <p:menuitem value="Customers" url="#" icon="fa fa-users" />
+                            </p:submenu>
+                        </p:column>
                     </p:submenu>
 
-                    <p:submenu label="Orders">
-                        <p:menuitem value="Order Queue"
-                            icon="fa fa-tasks" />
+
+                    <p:submenu label="Tables" icon="fa fa-ring">
+                        <p:column>
+                            <p:submenu label="Options">
+                                <p:menuitem value="New Table" url="#" icon="fa fa-plus-circle" />
+                                <p:menuitem value="Tables" icon="fa fa-list" actionListener="#{restaurantBean.viewTables(restaurantBean.restaurantSelected)}" />"
+                            </p:submenu>
+                        </p:column>
                     </p:submenu>
 
-                    <p:submenu label="Check">
-                        <p:menuitem value="Checks"
-                            icon="fa fa-file-invoice-dollar" />
+                    <p:submenu label="Menus" icon="fa fa-clipboard-list">
+                        <p:column>
+                            <p:submenu label="Options">
+                                <p:menuitem value="Available"
+                                    url="/Restaurant/pages/menus.xhtml"
+                                    icon="fa fa-check-circle" />
+                                <p:menuitem value="Unavailable"
+                                    url="/Restaurant/pages/menus.xhtml"
+                                    icon="fa fa-stop-circle" />
+                            </p:submenu>
+                        </p:column>
                     </p:submenu>
-                </p:menu>
+                </p:megaMenu>
             </h:form>
         </div>
         <div class="ui-g-12 ui-md-10 ui-g-nopad">
@@ -70,8 +94,6 @@
                                 class="text-white text-4xl font-bold mb-10">
                                 #{restaurantBean.restaurantSelected.name}</h1>
                         </div>
-                        <p:linkButton outcome="restaurants"
-                            value=" Restaurants" icon="pi pi-home" />
                     </div>
                 </div>
                 <div id="content-restaurant" class="justify-center">
@@ -80,8 +102,26 @@
                 </div>
             </div>
         </div>
-        <div class="ui-g-12">Footer</div>
-    </div>
+        <div class="bg-gray-800 p-4 w-full flex justify-around">
+            <div class="text-center">© 2024 - All rights reserved
+            </div>
+            <div class="text-center text-white">
+                Developed by
+                <p:link href="https://github.com/wrath-codes"
+                    class="text-gray-200">wrathCodes</p:link>
+            </div>
+            <div class="flex space-x-2">
+                <div>Powered by</div>
+                <p:link value="JSF"
+                    href="https://www.oracle.com/java/technologies/jsf.html" />
+                <p:link value="PrimeFaces"
+                    href="https://www.primefaces.org" />
+                <p:link value="OmniFaces" href="http://omnifaces.org" />
+                <p:link href="https://tailwindcss.com/"
+                    value="TailwindCSS" />
+            </div>
+        </div>
 
+    </div>
 </h:body>
 </html>
