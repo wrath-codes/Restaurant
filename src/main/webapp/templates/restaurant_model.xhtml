@@ -65,7 +65,8 @@
                         <p:column>
                             <p:submenu label="Options">
                                 <p:menuitem value="New Table" url="#" icon="fa fa-plus-circle" />
-                                <p:menuitem value="Tables" icon="fa fa-list" actionListener="#{restaurantBean.viewTables(restaurantBean.restaurantSelected)}" />"
+                                <p:menuitem value="Tables" 
+                                icon="fa fa-list" actionListener="#{restaurantBean.viewTables(restaurantBean.restaurantSelected)}" />"
                             </p:submenu>
                         </p:column>
                     </p:submenu>
@@ -98,6 +99,7 @@
                 </div>
                 <div id="content-restaurant" class="justify-center">
                     <ui:insert name="content-restaurant">
+                        <ui:param name="restaurant" value="#{restaurantBean.restaurantSelected}" />
                     </ui:insert>
                 </div>
             </div>

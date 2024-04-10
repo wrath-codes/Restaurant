@@ -9,48 +9,65 @@ import javax.persistence.ManyToOne;
 @Entity
 public class RestaurantTable extends GenericDomain {
 
-    @Column(nullable = false)
-    private Integer number;
+	@Column(nullable = false)
+	private Integer number;
 
-    @Column(nullable = false)
-    private Boolean available;
+	@Column(nullable = false)
+	private Boolean available = true;
 
-    @Column(nullable = false)
-    private Integer capacity;
+	@Column(nullable = false)
+	private Integer capacity;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Restaurant restaurant;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Restaurant restaurant;
 
-    public Integer getNumber() {
-        return number;
-    }
+	public RestaurantTable(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
+	// Additional constructor that initializes all fields
+	public RestaurantTable(Integer number, Boolean available, Integer capacity, Restaurant restaurant) {
+		this.number = number;
+		this.available = available;
+		this.capacity = capacity;
+		this.restaurant = restaurant;
+	}
 
-    public Boolean getAvailable() {
-        return available;
-    }
+	// No-argument constructor required by JPA
+	public RestaurantTable() {
+		// No initialization needed
+	}
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
+	public Integer getNumber() {
+		return number;
+	}
 
-    public Integer getCapacity() {
-        return capacity;
-    }
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
+	public Boolean getAvailable() {
+		return available;
+	}
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
+	public void setAvailable(Boolean available) {
+		this.available = available;
+	}
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
+	public Integer getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 }

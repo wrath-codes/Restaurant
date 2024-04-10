@@ -18,6 +18,8 @@ public class RestaurantTableDAO extends GenericDAO<RestaurantTable> {
 			query.add(Restrictions.eq("restaurant.code", restaurantCode));
 
 			List<RestaurantTable> result = query.list();
+			System.out.println("Restaurant code: " + restaurantCode);
+			System.out.println("Result: " + result);
 			return result;
 		} catch (RuntimeException e) {
 			throw e;
@@ -25,4 +27,5 @@ public class RestaurantTableDAO extends GenericDAO<RestaurantTable> {
 			session.close();
 		}
 	}
+
 }

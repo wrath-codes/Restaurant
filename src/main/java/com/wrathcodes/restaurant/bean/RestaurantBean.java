@@ -68,10 +68,9 @@ public class RestaurantBean implements Serializable {
 	}
 
 	public void viewTables(Restaurant restaurant) throws IOException {
-		RestaurantDAO restaurantDAO = new RestaurantDAO();
-		restaurantSelected = restaurantDAO.search(restaurant.getCode());
 		FacesContext.getCurrentInstance().getExternalContext()
-				.redirect("/Restaurant/pages/restaurant/tables.xhtml" + "?code=" + restaurantSelected.getCode());
+				.redirect("/Restaurant/pages/restaurant/tables.xhtml" + "?code=" + restaurant.getCode());
+
 	}
 
 	public Integer tableCount(Long code) {
