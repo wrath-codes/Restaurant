@@ -24,7 +24,7 @@ public class RestaurantBean implements Serializable {
 
 	private Restaurant restaurant;
 
-	private String code;
+	private Long restaurantCode;
 
 	private Restaurant restaurantSelected;
 
@@ -52,25 +52,18 @@ public class RestaurantBean implements Serializable {
 		this.restaurants = restaurants;
 	}
 
-	public String getCode() {
-		return code;
+	public Long getRestaurantCode() {
+		return restaurantCode;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setRestaurantCode(Long code) {
+		this.restaurantCode = code;
 	}
 
 	public void view(Restaurant restaurant) throws IOException {
 		RestaurantDAO restaurantDAO = new RestaurantDAO();
 		restaurantSelected = restaurantDAO.search(restaurant.getCode());
-		FacesContext.getCurrentInstance().getExternalContext()
-				.redirect("/Restaurant/pages/restaurant/index.xhtml" + "?code=" + restaurantSelected.getCode());
-	}
-
-	public void viewTables(Restaurant restaurant) throws IOException {
-		FacesContext.getCurrentInstance().getExternalContext()
-				.redirect("/Restaurant/pages/restaurant/tables.xhtml" + "?code=" + restaurant.getCode());
-
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/overview.xhtml");
 	}
 
 	public Integer tableCount(Long code) {

@@ -1,10 +1,12 @@
 package com.wrathcodes.restaurant.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
@@ -17,50 +19,69 @@ import com.wrathcodes.restaurant.domain.RestaurantTable;
 @SessionScoped
 @SuppressWarnings("serial")
 public class RestaurantTableBean implements Serializable {
-	private RestaurantTable restaurantTable;
-	private List<RestaurantTable> restaurantTableList;
+	private RestaurantTable table;
+	private List<RestaurantTable> tables;
+	private Restaurant currentRestaurant;
 
-	public RestaurantTable getRestaurantTable() {
-		return restaurantTable;
+	public Restaurant getCurrentRestaurant() {
+		return currentRestaurant;
 	}
 
-	public void setRestaurantTable(RestaurantTable restaurantTable) {
-		this.restaurantTable = restaurantTable;
+	public void setCurrentRestaurant(Restaurant currentRestaurant) {
+		this.currentRestaurant = currentRestaurant;
 	}
 
-	public List<RestaurantTable> getRestaurantTableList() {
-		return restaurantTableList;
+	public RestaurantTable getTable() {
+		return table;
 	}
 
-	public void setRestaurantTableList(List<RestaurantTable> restaurantTableList) {
-		this.restaurantTableList = restaurantTableList;
+	public void setTable(RestaurantTable table) {
+		this.table = table;
 	}
 
-	public void list(Long restaurantCode) {
+	public List<RestaurantTable> getTables() {
+		return tables;
+	}
+
+	public void setTables(List<RestaurantTable> tables) {
+		this.tables = tables;
+	}
+
+	public void viewTables() throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/tables.xhtml"
+				+ "?code=" + currentRestaurant.getCode() + "&faces-redirect=true" + "&includeViewParams=true");
+		list();
+	}
+
+	public void list() {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
-			Messages.addGlobalInfo("Restaurant code: " + restaurantCode);
-			restaurantTableList = restaurantTableDAO.list(restaurantCode);
+			tables = restaurantTableDAO.list(currentRestaurant.getCode());
+
+			System.out.println("Current restaurant code: " + currentRestaurant.getCode());
+			System.out.println("Current restaurant name: " + currentRestaurant.getName());
+			System.out.println("Current tables: " + tables);
 		} catch (RuntimeException error) {
 			error.printStackTrace();
 		}
 	}
 
-	public void add(Restaurant restaurant) {
-		restaurantTable = new RestaurantTable(restaurant);
-		restaurantTable.setRestaurant(restaurant);
+	public void add() {
+		table = new RestaurantTable(currentRestaurant);
+		table.setRestaurant(currentRestaurant);
 	}
 
 	public void save() {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
 
-			restaurantTableDAO.merge(restaurantTable);
+			restaurantTableDAO.merge(table);
 
-			add(restaurantTable.getRestaurant());
+			add();
 
-			System.out.println("Restaurant code: " + restaurantTable.getRestaurant().getCode());
-			restaurantTableList = restaurantTableDAO.list(restaurantTable.getRestaurant().getCode());
+			System.out.println("Restaurant code: " + table.getRestaurant().getCode());
+
+			list();
 
 			Messages.addGlobalInfo("Table saved successfully");
 		} catch (RuntimeException error) {
@@ -71,9 +92,9 @@ public class RestaurantTableBean implements Serializable {
 	public void delete() {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
-			restaurantTableDAO.delete(restaurantTable);
+			restaurantTableDAO.delete(table);
 
-			restaurantTableList = restaurantTableDAO.list();
+			tables = restaurantTableDAO.list();
 
 			Messages.addGlobalInfo("Table deleted successfully");
 		} catch (RuntimeException error) {
@@ -82,7 +103,7 @@ public class RestaurantTableBean implements Serializable {
 	}
 
 	public void edit(ActionEvent event) {
-		restaurantTable = (RestaurantTable) event.getComponent().getAttributes().get("selectedTable");
+		table = (RestaurantTable) event.getComponent().getAttributes().get("selectedTable");
 	}
 
 }

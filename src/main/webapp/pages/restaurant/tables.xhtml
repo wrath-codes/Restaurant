@@ -4,148 +4,77 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
     template="/templates/restaurant_model.xhtml">
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
-        <title>#{restaurantBean.restaurantSelected.name} -
+        <title>#{restaurantTableBean.currentRestaurant.name} -
             Tables</title>
-
-
     </ui:define>
+
     <ui:define name="content-restaurant">
-        <f:metadata>
-            <f:viewParam name="restaurantCode"
-                value="#{restaurantBean.restaurantSelected.code}" />
-            <f:event type="preRenderView"
-                listener="#{restaurantTableBean.list(restaurantBean.restaurantSelected.code)}" />
-            <f:viewAction action="#{restaurantTableBean.list(restaurantBean.restaurantSelected.code)}" />
-        </f:metadata>
-
-        <h:form id="formListTables" class="py-5">
-            <p:panel header="Tables - List">
-                <p:dataTable
-                    emptyMessage="No Tables Records found for #{restaurantBean.restaurantSelected.name}."
-                    paginator="true" paginatorPosition="bottom"
-                    value="#{restaurantTableBean.restaurantTableList}"
-                    var="tableCursor" rows="5" id="tablesDataTable">
-                    <f:facet name="header">
-                        <p:commandButton value="Add"
-                            oncomplete="PF('addTableDialog').show();"
-                            actionListener="#{restaurantTableBean.add(restaurantBean.restaurantSelected)}"
-                            update=":addTableForm:addTablePanelGrid">
-                            <f:actionListener
-                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                        </p:commandButton>
-                    </f:facet>
+        <div id="overview" class="bg-gray-900 h-screen">
+            <h:form>
+                <div class="flex space-between">
+                    <div class="space-x-2"></div>
+                    <div class="space-x-2">
+                        <h:outputText
+                            value="#{restaurantTableBean.currentRestaurant.name} " />
+                        <h:outputText
+                            value="#{restaurantTableBean.currentRestaurant.code} - Tables" />
 
 
-                    <p:column headerText="Number"
-                        sortBy="#{tableCursor.number}"
-                        filterBy="#{tableCursor.number}">
-                        <h:outputText value="#{tableCursor.number}"
-                        rendered="#{tableCursor.number != null}" />
+                    </div>
+                </div>
+            </h:form>
+
+            <h:form id="listTablesForm" class="py-5">
+                <p:dataTable id="listTables" var="table"
+                    value="#{restaurantTableBean.tables}"
+                    paginator="true" rows="10"
+                    paginatorPosition="bottom"
+                    paginatorAlwaysVisible="false"
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="5,10,15"
+                    emptyMessage="No tables found with given criteria"
+                    selectionMode="single"
+                    selection="#{restaurantTableBean.table}"
+                    rowKey="#{table.code}" draggableColumns="true"
+                    resizableColumns="true" scrollable="true">
+                    <p:column headerText="Table Number"
+                        sortBy="#{table.number}"
+                        filterBy="#{table.number}">
+                        <h:outputText value="#{table.number}" />
                     </p:column>
 
-                    <p:column headerText="Table Capacity">
-                        <h:outputText value="#{tableCursor.capacity}" 
-                        rendered="#{tableCursor.capacity != null}" />
+                    <p:column headerText="Capacity"
+                        sortBy="#{table.capacity}"
+                        filterBy="#{table.capacity}">
+                        <h:outputText value="#{table.capacity}" />
                     </p:column>
 
-                    <p:column headerText="Available">"
-                        <h:outputText value="#{tableCursor.available}" />
+                    <p:column headerText="Available"
+                        sortBy="#{table.available}"
+                        filterBy="#{table.available}">
+                        <h:outputText rendered="#{table.available}"
+                            value="Yes" />
+                        <h:outputText rendered="#{!table.available}"
+                            value="No" />
                     </p:column>
 
 
-
-
-                    <p:column headerText="Options">
-                        <!-- <p:commandButton icon="pi pi-eye" -->
-                        <!--     style="margin-right: 5px;" -->
-                        <!--     actionListener="#{restaurantBean.view(restaurantCursor)}" -->
-                        <!--     ajax="false"> -->
-                        <!-- </p:commandButton> -->
-
+                    <p:column headerText="Actions" style="width: 100px">
                         <p:commandButton icon="pi pi-pencil"
-                            style="margin-right: 5px; margin-left: 5px;"
-                            actionListener="#{restaurantTableBean.edit}"
-                            update=":addTableForm:addTablePanelGrid"
-                            oncomplete="PF('addTableDialog').show();">
-                            <f:attribute name="selectedTable"
-                                value="#{tableCursor}" />
-                        </p:commandButton>
-
+                            title="Edit"
+                            action="#{restaurantTableBean.editTable(table)}" />
                         <p:commandButton icon="pi pi-trash"
-                            style="margin-right: 5px; margin-left: 5px;"
-                            actionListener="#{restaurantTableBean.delete}"
-                            update=":dialogMessage :formListTables:tablesDataTable">
-                            <p:confirm header="Confirmation"
-                                message="Are you sure?"
-                                icon="ui-icon-alert" />
-                            <f:attribute name="selectedTable"
-                                value="#{tableCursor}" />
-                        </p:commandButton>
+                            title="Delete"
+                            action="#{restaurantTableBean.deleteTable(table)}" />
                     </p:column>
                 </p:dataTable>
-
-                <p:confirmDialog global="true" showEffect="fade"
-                    hideEffect="fade">
-                    <p:commandButton value="Yes" type="button"
-                        styleClass="ui-confirmdialog-yes"
-                        icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button"
-                        styleClass="ui-confirmdialog-no"
-                        icon="ui-icon-close" />
-                </p:confirmDialog>
-            </p:panel>
-        </h:form>
-
-        <!-- Add Restaurant Modal -->
-        <p:dialog
-            header="#{restaurantBean.restaurantSelected.name} - Add Table"
-            widgetVar="addTableDialog" modal="true" resizable="false"
-            draggable="false" showEffect="fade" hideEffect="fade"
-            closable="false">
-            <h:form id="addTableForm">
-                <h:panelGrid columns="2" id="addTablePanelGrid">
-                    <p:outputLabel value="Number" for="numero" />
-                    <p:inputText id="numero" maxlength="5" size="10"
-                        value="#{restaurantTableBean.restaurantTable.number}"
-                        required="true"
-                        requiredMessage="O campo Numero é obrigatório."
-                        converterMessage="O campo Numero deve ser um número inteiro.">
-                        <f:validateLongRange minimum="1" maximum="999" />
-                    </p:inputText>
-
-                    <p:outputLabel value="Capacity" for="capacidade" />
-                    <p:inputText id="capacidade" maxlength="5" size="10"
-                        value="#{restaurantTableBean.restaurantTable.capacity}"
-                        required="true"
-                        requiredMessage="O campo Capacidade é obrigatório."
-                        converterMessage="O campo Capacidade deve ser um número inteiro.">
-                        <f:validateLongRange minimum="1" maximum="999" />
-                    </p:inputText>
-
-                    <p:outputLabel
-                        rendered="#{restaurantTableBean.restaurantTable.code != null}"
-                        value="Available" for="disponivel" />
-
-                    <p:selectBooleanCheckbox id="disponivel"
-                        rendered="#{restaurantTableBean.restaurantTable.code != null}"
-                        value="#{restaurantTableBean.restaurantTable.available}"
-                        required="true"
-                        requiredMessage="O campo Disponível é obrigatório." />
-
-                </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <p:commandButton value="Save"
-                        actionListener="#{restaurantTableBean.save}"
-                        update=":dialogMessage :addTableForm:addTablePanelGrid :formListTables:tablesDataTable" />
-                    <p:commandButton value=" Close"
-                        oncomplete="PF('addTableDialog').hide();" />
-                </h:panelGrid>
             </h:form>
-        </p:dialog>
+        </div>
+
     </ui:define>
 </ui:composition>

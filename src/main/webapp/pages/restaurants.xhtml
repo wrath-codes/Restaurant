@@ -23,10 +23,10 @@
                         <p:commandButton value="Add"
                             oncomplete="PF('addRestaurantDialog').show();"
                             actionListener="#{restaurantBean.add}"
-                            update=":addRestaurantForm:addRestaurantPanelGrid"
-                            >
-                                <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                            </p:commandButton>
+                            update=":addRestaurantForm:addRestaurantPanelGrid">
+                            <f:actionListener
+                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </p:commandButton>
                     </f:facet>
 
 
@@ -37,7 +37,8 @@
                     </p:column>
 
                     <p:column headerText="Table Count">
-                        <h:outputText value="#{restaurantBean.tableCount(restaurantCursor.code)}" />
+                        <h:outputText
+                            value="#{restaurantBean.tableCount(restaurantCursor.code)}" />
                     </p:column>
 
                     <p:column headerText="Options">
@@ -45,6 +46,9 @@
                             style="margin-right: 5px;"
                             actionListener="#{restaurantBean.view(restaurantCursor)}"
                             ajax="false">
+                            <f:setPropertyActionListener
+                                target="#{restaurantTableBean.currentRestaurant}"
+                                value="#{restaurantCursor}" />
                         </p:commandButton>
 
                         <p:commandButton icon="pi pi-pencil"

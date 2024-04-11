@@ -23,29 +23,33 @@
 
     <ui:insert name="titleRestaurant">
     </ui:insert>
+
 </h:head>
 
 <h:body class=" bg-gray-900 h-max">
     <p:growl id="dialogMessage" />
     <div class="ui-g ">
         <div class="ui-g-12 ui-md-2">
-            <h:form>
+            <h:form id="formMenuRestaurant">
                 <p:megaMenu orientation="vertical" autoDisplay="false">
                     <p:menuitem value="Home"
                         url="/Restaurant/pages/restaurants.xhtml"
                         icon="fa fa-home" />
                     <p:separator />
                     <p:menuitem value="Overview"
-                        url="/Restaurant/pages/restaurants.xhtml"
+                        url="/Restaurant/pages/restaurant/overview.xhtml"
                         icon="fa fa-chart-line" />
 
 
                     <p:submenu label="Orders" icon="fa fa-tasks">
                         <p:column>
                             <p:submenu label="Options">
-                                <p:menuitem value="New Order" url="#" icon="fa fa-plus-circle" />
-                                <p:menuitem value="Cancel Order" url="#" icon="fa fa-minus-circle" />
-                                <p:menuitem value="Orders" url="#" icon="fa fa-list" />
+                                <p:menuitem value="New Order" url="#"
+                                    icon="fa fa-plus-circle" />
+                                <p:menuitem value="Cancel Order" url="#"
+                                    icon="fa fa-minus-circle" />
+                                <p:menuitem value="Orders" url="#"
+                                    icon="fa fa-list" />
                             </p:submenu>
                         </p:column>
                     </p:submenu>
@@ -54,8 +58,10 @@
                         icon="fa fa-user-friends">
                         <p:column>
                             <p:submenu label="Options">
-                                <p:menuitem value="New Customer" url="#" icon="fa fa-user-plus" />
-                                <p:menuitem value="Customers" url="#" icon="fa fa-users" />
+                                <p:menuitem value="New Customer" url="#"
+                                    icon="fa fa-user-plus" />
+                                <p:menuitem value="Customers" url="#"
+                                    icon="fa fa-users" />
                             </p:submenu>
                         </p:column>
                     </p:submenu>
@@ -64,9 +70,12 @@
                     <p:submenu label="Tables" icon="fa fa-ring">
                         <p:column>
                             <p:submenu label="Options">
-                                <p:menuitem value="New Table" url="#" icon="fa fa-plus-circle" />
-                                <p:menuitem value="Tables" 
-                                icon="fa fa-list" actionListener="#{restaurantBean.viewTables(restaurantBean.restaurantSelected)}" />"
+                                <p:menuitem value="New Table" url="#"
+                                    icon="fa fa-plus-circle" />
+                                <p:menuitem value="Tables"
+                                    icon="fa fa-list"
+                                    url="/Restaurant/pages/restaurant/tables.xhtml" />
+
                             </p:submenu>
                         </p:column>
                     </p:submenu>
@@ -75,7 +84,7 @@
                         <p:column>
                             <p:submenu label="Options">
                                 <p:menuitem value="Available"
-                                    url="/Restaurant/pages/menus.xhtml"
+                                    url="/Restaurant/pages/restaurant/menus.xhtml"
                                     icon="fa fa-check-circle" />
                                 <p:menuitem value="Unavailable"
                                     url="/Restaurant/pages/menus.xhtml"
@@ -93,13 +102,14 @@
                         <div>
                             <h1
                                 class="text-white text-4xl font-bold mb-10">
-                                #{restaurantBean.restaurantSelected.name}</h1>
+                                #{restaurantTableBean.currentRestaurant.name}</h1>
                         </div>
                     </div>
                 </div>
                 <div id="content-restaurant" class="justify-center">
                     <ui:insert name="content-restaurant">
-                        <ui:param name="restaurant" value="#{restaurantBean.restaurantSelected}" />
+                        <ui:param name="parameterRestaurantTableBean"
+                            value="#{restaurantTableBean}" />
                     </ui:insert>
                 </div>
             </div>
@@ -115,7 +125,7 @@
             <div class="flex space-x-2">
                 <div>Powered by</div>
                 <p:link value="JSF"
-                    href="https://www.oracle.com/java/technologies/jsf.html" />
+                    href="https://www.oracle.com/java/technologies/javaserverfaces.html" />
                 <p:link value="PrimeFaces"
                     href="https://www.primefaces.org" />
                 <p:link value="OmniFaces" href="http://omnifaces.org" />

@@ -9,18 +9,18 @@
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
-        <title>#{restaurantBean.restaurantSelected.name}</title>
+        <title>#{restaurantTableBean.currentRestaurant.name}</title>
     </ui:define>
 
     <ui:define name="content-restaurant">
-        <div id="geral" class="bg-gray-900 h-screen">
+        <div id="overview" class="bg-gray-900 h-screen">
             <h:form>
                 <div class="flex space-between">
                     <div class="space-x-2">
                     </div>
                     <div class="space-x-2">
                         <h:outputText
-                            value="#{restaurantBean.restaurantSelected.name}" />
+                            value="#{restaurantTableBean.currentRestaurant.name} - Code: #{restaurantTableBean.currentRestaurant.code} - Overview" />
                     </div>
                 </div>
             </h:form>
