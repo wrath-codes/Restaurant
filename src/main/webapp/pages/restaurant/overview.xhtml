@@ -13,14 +13,26 @@
     </ui:define>
 
     <ui:define name="content-restaurant">
+        <f:metadata>
+            <f:viewParam name="restaurantCode"
+                value="#{restaurantTableBean.currentRestaurant.code}" />
+            <f:event type="preRenderView"
+                listener="#{restaurantTableBean.list}" />
+            <f:event type="preRenderView"
+                listener="#{menuBean.list}" />
+        </f:metadata>
+
         <div id="overview" class="bg-gray-900 h-screen">
             <h:form>
                 <div class="flex space-between">
-                    <div class="space-x-2">
-                    </div>
+                    <div class="space-x-2"></div>
                     <div class="space-x-2">
                         <h:outputText
-                            value="#{restaurantTableBean.currentRestaurant.name} - Code: #{restaurantTableBean.currentRestaurant.code} - Overview" />
+                            value="#{restaurantBean.restaurantSelected.name} - Code: #{restaurantBean.restaurantSelected.code} - Overview" />
+                        <br />
+                        <h:outputText value="Tables: #{restaurantTableBean.tables.size()}" />
+                        <br />
+                        <h:outputText value="Menus: #{menuBean.menus.size()}" />
                     </div>
                 </div>
             </h:form>

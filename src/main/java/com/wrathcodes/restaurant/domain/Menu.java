@@ -9,59 +9,74 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Menu extends GenericDomain {
 
-    @Column(length = 50, nullable = false, unique = true)
-    private String name;
+	@Column(length = 50, nullable = false, unique = true)
+	private String name;
 
-    @Column(length = 100, nullable = false)
-    private String description;
+	@Column(length = 100, nullable = false)
+	private String description;
 
-    @Column(length = 50, nullable = false)
-    private String season;
+	@Column(length = 50, nullable = false)
+	private String season;
 
-    @Column(nullable = false)
-    private Boolean available;
+	@Column(nullable = false)
+	private Boolean available;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Restaurant restaurant;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Restaurant restaurant;
 
-    public String getName() {
-        return name;
-    }
+	public Menu() {
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Menu(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public Menu(String name, String description, String season, Boolean available, Restaurant restaurant) {
+		this.name = name;
+		this.description = description;
+		this.season = season;
+		this.available = available;
+		this.restaurant = restaurant;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getSeason() {
-        return season;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setSeason(String season) {
-        this.season = season;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Boolean getAvailable() {
-        return available;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
+	public String getSeason() {
+		return season;
+	}
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
+	public void setSeason(String season) {
+		this.season = season;
+	}
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
+	public Boolean getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(Boolean available) {
+		this.available = available;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 }

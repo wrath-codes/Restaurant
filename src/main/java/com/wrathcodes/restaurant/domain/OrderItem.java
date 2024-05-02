@@ -14,73 +14,73 @@ import javax.persistence.TemporalType;
 @SuppressWarnings("serial")
 @Entity
 public class OrderItem extends GenericDomain {
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status = OrderStatus.PENDING;
 
-    @Enumerated(EnumType.STRING)
-    private OrderPriority priority;
+	@Enumerated(EnumType.STRING)
+	private OrderPriority priority = OrderPriority.MEDIUM;
 
-    @Column(nullable = false)
-    private Integer quantity;
+	@Column(nullable = false)
+	private Integer quantity = 1;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderedAt;
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date orderedAt = new Date();
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private MenuItem item;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private MenuItem item;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private OrderCustomer orderCustomer;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private OrderCustomer orderCustomer;
 
-    public OrderStatus getStatus() {
-        return status;
-    }
+	public OrderStatus getStatus() {
+		return status;
+	}
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
 
-    public OrderPriority getPriority() {
-        return priority;
-    }
+	public OrderPriority getPriority() {
+		return priority;
+	}
 
-    public void setPriority(OrderPriority priority) {
-        this.priority = priority;
-    }
+	public void setPriority(OrderPriority priority) {
+		this.priority = priority;
+	}
 
-    public Date getOrderedAt() {
-        return orderedAt;
-    }
+	public Date getOrderedAt() {
+		return orderedAt;
+	}
 
-    public void setOrderedAt(Date orderedAt) {
-        this.orderedAt = orderedAt;
-    }
+	public void setOrderedAt(Date orderedAt) {
+		this.orderedAt = orderedAt;
+	}
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 
-    public MenuItem getItem() {
-        return item;
-    }
+	public MenuItem getItem() {
+		return item;
+	}
 
-    public void setItem(MenuItem item) {
-        this.item = item;
-    }
+	public void setItem(MenuItem item) {
+		this.item = item;
+	}
 
-    public OrderCustomer getOrderCustomer() {
-        return orderCustomer;
-    }
+	public OrderCustomer getOrderCustomer() {
+		return orderCustomer;
+	}
 
-    public void setOrderCustomer(OrderCustomer orderCustomer) {
-        this.orderCustomer = orderCustomer;
-    }
+	public void setOrderCustomer(OrderCustomer orderCustomer) {
+		this.orderCustomer = orderCustomer;
+	}
 
 }
