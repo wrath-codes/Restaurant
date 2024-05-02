@@ -2,8 +2,10 @@ package com.wrathcodes.restaurant.bean;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -53,11 +55,11 @@ public class RestaurantTableBean implements Serializable {
 		list();
 	}
 
+	@PostConstruct
 	public void list() {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
 			tables = restaurantTableDAO.list(currentRestaurant.getCode());
-
 			System.out.println("Current restaurant code: " + currentRestaurant.getCode());
 			System.out.println("Current restaurant name: " + currentRestaurant.getName());
 			System.out.println("Current tables: " + tables);
@@ -71,7 +73,7 @@ public class RestaurantTableBean implements Serializable {
 		table.setRestaurant(currentRestaurant);
 	}
 
-	public void save() {
+	public void save() throws SQLIntegrityConstraintViolationException {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
 
@@ -85,13 +87,20 @@ public class RestaurantTableBean implements Serializable {
 
 			Messages.addGlobalInfo("Table saved successfully");
 		} catch (RuntimeException error) {
-			error.printStackTrace();
+			if (error.getCause().toString().contains("SQLIntegrityConstraintViolationException")) {
+				error.printStackTrace();
+				Messages.addGlobalError("Table number already exists");
+			} else {
+				error.printStackTrace();
+				Messages.addGlobalError("Error saving table");
+			}
 		}
 	}
 
-	public void delete() {
+	public void delete(ActionEvent event) {
 		try {
 			RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
+			table = (RestaurantTable) event.getComponent().getAttributes().get("selectedTable");
 			restaurantTableDAO.delete(table);
 
 			tables = restaurantTableDAO.list();
