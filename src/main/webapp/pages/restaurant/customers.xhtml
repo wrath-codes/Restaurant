@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="/templates/restaurant_model.xhtml">
+
+    <ui:define name="titleRestaurant">
+        <!-- <p:outputLabel value="#{customerBean.currentRestaurant.name}" /> -->
+        <title>#{customerBean.currentRestaurant.name} -
+            Customers</title>
+    </ui:define>
+
+    <ui:define name="content-restaurant">
+        <f:metadata>
+            <f:viewParam name="restaurantCode"
+                value="#{customerBean.currentRestaurant.code}" />
+            <f:event type="preRenderView"
+                listener="#{customerBean.list}" />
+        </f:metadata>
+        <div id="overview" class="bg-gray-900 h-screen">
+            <h:form>
+                <div class="flex space-between">
+                    <div class="space-x-2"></div>
+                    <div class="space-x-2">
+                        <h:outputText
+                            value="#{customerBean.currentRestaurant.name} " />
+                        <h:outputText
+                            value="#{customerBean.currentRestaurant.code} - Customers" />
+                    </div>
+                </div>
+            </h:form>
+
+
+            <h:form id="listCustomersForm" class="py-5">
+                <p:panel
+                    header="#{customerBean.currentRestaurant.name} - Customers"
+                    styleClass="p-3">
+                    <p:dataTable id="listCustomers" var="customer"
+                        value="#{customerBean.customers}"
+                        paginator="true" rows="10"
+                        paginatorPosition="bottom"
+                        emptyMessage="No customers found for #{customerBean.currentRestaurant.name}">
+
+                        <f:facet name="header">
+                            <p:commandButton value="Add"
+                                oncomplete="PF('addCustomerDialog').show();"
+                                actionListener="#{customerBean.add}"
+                                update=":addCustomerForm:addCustomerPanelGrid">
+                                <f:actionListener
+                                    type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            </p:commandButton>
+                        </f:facet>
+
+                        <p:column headerText="Name"
+                            sortBy="#{customer.name}"
+                            filterBy="#{customer.name}">
+                            <h:outputText value="#{customer.name}" />
+                        </p:column>
+
+                        <p:column headerText="Seated at"
+                            sortBy="#{customer.seatedAt}"
+                            filterBy="#{customer.seatedAt}">
+                            <h:outputText
+                                value=" Table #{customer.seatedAt.number}" />
+                        </p:column>
+
+                        <p:column headerText="Actions">
+                            <div class="flex space-x-2">
+                                <p:commandButton icon="fa fa-pencil"
+                                    title="Edit"
+                                    actionListener="#{customerBean.edit}"
+                                    update=":dialogMessage 
+                                    :addCustomerForm:addCustomerPanelGrid"
+                                    oncomplete="PF('addCustomerDialog').show();">
+                                    <f:attribute name="selectedCustomer"
+                                        value="#{customer}" />
+                                    <f:actionListener
+                                        type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                </p:commandButton>
+
+                                <p:commandButton icon="fa fa-trash"
+                                    title="Delete"
+                                    actionListener="#{customerBean.delete}"
+                                    update=":dialogMessage
+                            :listCustomersForm:listCustomers">
+
+                                    <p:confirm header="Confirmation"
+                                        message="Are you sure you want to delete this customer?"
+                                        icon="fa fa-exclamation-triangle"
+                                        style="font-size: 10px;" />
+                                    <f:attribute name="selectedCustomer"
+                                        value="#{customer}" />
+
+                                </p:commandButton>
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:confirmDialog global="true" showEffect="fade"
+                        hideEffect="fade">
+                        <p:commandButton value="Yes" type="button"
+                            styleClass="ui-confirmdialog-yes"
+                            icon="fa fa-check" />
+                        <p:commandButton value="No" type="button"
+                            styleClass="ui-confirmdialog-no"
+                            icon="fa fa-ban" />
+                    </p:confirmDialog>
+                </p:panel>
+            </h:form>
+
+            <p:dialog header="Customer - Add"
+                widgetVar="addCustomerDialog" modal="true"
+                resizable="false" draggable="false" showEffect="fade"
+                hideEffect="fade" closable="false">
+                <h:form id="addCustomerForm">
+                    <h:panelGrid columns="2" id="addCustomerPanelGrid">
+                        <p:outputLabel value="Name" />
+                        <p:inputText id="name" maxlength="50" size="30"
+                            value="#{customerBean.customer.name}"
+                            required="true"
+                            requiredMessage="O campo Name é obrigatório." />
+
+                        <p:outputLabel value="Seated At" />
+                        <p:selectOneMenu id="seatedAt"
+                            value="#{customerBean.customer.seatedAt}"
+                            required="true"
+                            requiredMessage="O campo Description é obrigatório."
+                            converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="Select a Table"
+                                noSelectionOption="true" />
+                            <f:selectItems
+                                value="#{restaurantTableBean.tables}"
+                                var="table" itemValue="#{table}"
+                                itemLabel="#{table.number}" />
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Save"
+                            actionListener="#{customerBean.save}"
+                            update=":dialogMessage :addCustomerForm:addCustomerPanelGrid :listCustomersForm:listCustomers">
+                            <f:actionListener
+                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </p:commandButton>
+                        <p:commandButton value=" Close"
+                            oncomplete="PF('addCustomerDialog').hide();">
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </div>
+
+    </ui:define>
+</ui:composition>

@@ -9,17 +9,18 @@
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
-        <title>#{restaurantTableBean.currentRestaurant.name}</title>
+        <title>#{restaurantBean.restaurantSelected.name}</title>
     </ui:define>
 
     <ui:define name="content-restaurant">
         <f:metadata>
             <f:viewParam name="restaurantCode"
-                value="#{restaurantTableBean.currentRestaurant.code}" />
+                value="#{restaurantBean.restaurantSelected.code}" />
             <f:event type="preRenderView"
                 listener="#{restaurantTableBean.list}" />
+            <f:event type="preRenderView" listener="#{menuBean.list}" />
             <f:event type="preRenderView"
-                listener="#{menuBean.list}" />
+                listener="#{customerBean.list}" />
         </f:metadata>
 
         <div id="overview" class="bg-gray-900 h-screen">
@@ -30,9 +31,57 @@
                         <h:outputText
                             value="#{restaurantBean.restaurantSelected.name} - Code: #{restaurantBean.restaurantSelected.code} - Overview" />
                         <br />
-                        <h:outputText value="Tables: #{restaurantTableBean.tables.size()}" />
+                        <h:outputText
+                            value="Tables: #{restaurantTableBean.tables.size()}" />
                         <br />
-                        <h:outputText value="Menus: #{menuBean.menus.size()}" />
+                        <h:outputText
+                            value="Menus: #{menuBean.menus.size()}" />
+                        <p:panel header="Menus Available">
+                            <p:dataTable var="menu" id="menusAvailable"
+                                value="#{menuBean.menus}"
+                                rowStyleClass="#{menu.available == 'true' ? '' : 'ui-helper-hidden'}"
+                                stickyHeader="true">
+                                <p:column headerText="Name">
+                                    <h:outputText value="#{menu.name}" />
+                                </p:column>
+                                <p:column headerText="Description">
+                                    <h:outputText
+                                        value="#{menu.description}" />
+                                </p:column>
+                                <p:column headerText="Available">
+                                    <h:outputText
+                                        rendered="#{menu.available == 'true'}"
+                                        value="Yes" />
+                                </p:column>
+                            </p:dataTable>
+                            </p:panel>
+                            
+                            <br />
+
+                        <p:panel header="Menus Not Available">
+                            <p:dataTable var="menu"
+                                id="menusNotAvailable"
+                                value="#{menuBean.menus}"
+                                rowStyleClass="#{menu.available == 'false' ? '' : 'ui-helper-hidden'}"
+                                stickyHeader="true">
+                                <p:column headerText="Name">
+                                    <h:outputText value="#{menu.name}" />
+                                </p:column>
+                                <p:column headerText="Description">
+                                    <h:outputText
+                                        value="#{menu.description}" />
+                                </p:column>
+                                <p:column headerText="Available">
+                                    <h:outputText
+                                        rendered="#{menu.available == 'false'}"
+                                        value="No" />
+                                </p:column>
+                                </p:dataTable>
+                        </p:panel>
+
+                        <br />
+                        <h:outputText
+                            value="Customers: #{customerBean.customers.size()}" />
                     </div>
                 </div>
             </h:form>
