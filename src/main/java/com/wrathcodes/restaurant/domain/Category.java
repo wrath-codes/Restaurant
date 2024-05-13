@@ -19,6 +19,19 @@ public class Category extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Restaurant restaurant;
 
+	public Category() {
+	}
+
+	public Category(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public Category(String name, String description, Restaurant restaurant) {
+		this.name = name;
+		this.description = description;
+		this.restaurant = restaurant;
+	}
+
 	public String getName() {
 		return name;
 	}

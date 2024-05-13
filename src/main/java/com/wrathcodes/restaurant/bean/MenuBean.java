@@ -48,10 +48,16 @@ public class MenuBean implements Serializable {
 		this.currentRestaurant = currentRestaurant;
 	}
 
-	public void viewMenus() throws IOException {
-		FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/menus.xhtml"
-				+ "?code=" + currentRestaurant.getCode() + "&faces-redirect=true" + "&includeViewParams=true");
-		list();
+	public void view(ActionEvent event) {
+		try {
+			menu = (Menu) event.getComponent().getAttributes().get("selectedMenu");
+
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/menu.xhtml");
+
+		} catch (IOException e) {
+			Messages.addGlobalError("An error occurred while trying to view the menu items");
+			e.printStackTrace();
+		}
 	}
 
 	@PostConstruct

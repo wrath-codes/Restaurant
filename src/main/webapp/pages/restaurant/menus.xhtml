@@ -9,16 +9,14 @@
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
-        <title>#{menuBean.currentRestaurant.name} -
-            Menus</title>
+        <title>#{menuBean.currentRestaurant.name} - Menus</title>
     </ui:define>
 
     <ui:define name="content-restaurant">
         <f:metadata>
             <f:viewParam name="restaurantCode"
                 value="#{menuBean.currentRestaurant.code}" />
-            <f:event type="preRenderView"
-                listener="#{menuBean.list}" />
+            <f:event type="preRenderView" listener="#{menuBean.list}" />
         </f:metadata>
         <div id="overview" class="bg-gray-900 h-screen">
             <h:form>
@@ -75,15 +73,32 @@
                         <p:column headerText="Available"
                             sortBy="#{menu.available}"
                             filterBy="#{menu.available}">
-                            <h:outputText rendered="#{menu.available == 'true'}"
+                            <h:outputText
+                                rendered="#{menu.available == 'true'}"
                                 value="Yes" />
-                            <h:outputText rendered="#{menu.available == 'false'}"
+                            <h:outputText
+                                rendered="#{menu.available == 'false'}"
                                 value="No" />
                         </p:column>
 
 
                         <p:column headerText="Actions">
                             <div class="flex space-x-2">
+                                <p:commandButton icon="pi pi-eye"
+                                    style="margin-right: 5px;"
+                                    actionListener="#{menuBean.view}"
+                                    ajax="false">
+                                    <f:setPropertyActionListener
+                                        target="#{menuBean.menu}"
+                                        value="#{menu}" />
+                                    <f:setPropertyActionListener
+                                        target="#{categoryBean.currentRestaurant}"
+                                        value="#{menu.restaurant}" />
+                                    <f:setPropertyActionListener
+                                        target="#{menuItemBean.menu}"
+                                        value="#{menu}" />
+                                </p:commandButton>
+
                                 <p:commandButton icon="fa fa-pencil"
                                     title="Edit"
                                     actionListener="#{menuBean.edit}"
@@ -132,8 +147,7 @@
                 <h:form id="addMenuForm">
                     <h:panelGrid columns="2" id="addMenuPanelGrid">
                         <p:outputLabel value="Name" />
-                        <p:inputText id="name" maxlength="50"
-                            size="30"
+                        <p:inputText id="name" maxlength="50" size="30"
                             value="#{menuBean.menu.name}"
                             required="true"
                             requiredMessage="O campo Name é obrigatório." />
@@ -144,11 +158,10 @@
                             value="#{menuBean.menu.description}"
                             required="true"
                             requiredMessage="O campo Description é obrigatório." />
-                            
-                        <p:outputLabel value="Season" /> 
+
+                        <p:outputLabel value="Season" />
                         <p:inputText id="Season" maxlength="50"
-                            size="30"
-                            value="#{menuBean.menu.season}"
+                            size="30" value="#{menuBean.menu.season}"
                             required="true"
                             requiredMessage="O campo Season é obrigatório." />
 

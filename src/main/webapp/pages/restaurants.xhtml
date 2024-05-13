@@ -55,6 +55,9 @@
                             <f:setPropertyActionListener
                                 target="#{customerBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
+                            <f:setPropertyActionListener
+                                target="#{categoryBean.currentRestaurant}"
+                                value="#{restaurantCursor}" />
                         </p:commandButton>
 
                         <p:commandButton icon="pi pi-pencil"

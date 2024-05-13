@@ -11,38 +11,38 @@ import javax.persistence.ManyToOne;
 @Entity
 public class TableCheck extends GenericDomain {
 
-    @Column(nullable = false)
-    private Boolean closed;
+	@Column(nullable = false)
+	private Boolean closed = false;
 
-    @Column(nullable = false, precision = 6, scale = 2)
-    private BigDecimal checkTotal;
+	@Column(nullable = false, precision = 6, scale = 2)
+	private BigDecimal checkTotal;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private RestaurantTable restaurantTable;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private RestaurantTable restaurantTable;
 
-    public RestaurantTable getRestaurantTable() {
-        return restaurantTable;
-    }
+	public RestaurantTable getRestaurantTable() {
+		return restaurantTable;
+	}
 
-    public void setRestaurantTable(RestaurantTable restaurantTable) {
-        this.restaurantTable = restaurantTable;
-    }
+	public void setRestaurantTable(RestaurantTable restaurantTable) {
+		this.restaurantTable = restaurantTable;
+	}
 
-    public Boolean getClosed() {
-        return closed;
-    }
+	public Boolean getClosed() {
+		return closed;
+	}
 
-    public void setClosed(Boolean closed) {
-        this.closed = closed;
-    }
+	public void setClosed(Boolean closed) {
+		this.closed = closed;
+	}
 
-    public BigDecimal getTotal() {
-        return checkTotal;
-    }
+	public BigDecimal getTotal() {
+		return checkTotal;
+	}
 
-    public void setTotal(BigDecimal checkTotal) {
-        this.checkTotal = checkTotal;
-    }
+	public void setTotal(BigDecimal checkTotal) {
+		this.checkTotal = checkTotal;
+	}
 
 }

@@ -19,8 +19,7 @@ public class MenuDAO extends GenericDAO<Menu> {
 			query.add(Restrictions.eq("restaurant.code", restaurantCode));
 
 			List<Menu> result = query.list();
-			System.out.println("Restaurant code: " + restaurantCode);
-			System.out.println("Result: " + result);
+			System.out.println("Menus: " + result);
 			return result;
 		} catch (RuntimeException e) {
 			throw e;
