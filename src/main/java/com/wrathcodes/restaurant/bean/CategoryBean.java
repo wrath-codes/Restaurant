@@ -10,7 +10,7 @@ import javax.faces.event.ActionEvent;
 
 import com.wrathcodes.restaurant.dao.CategoryDAO;
 import com.wrathcodes.restaurant.domain.Category;
-import com.wrathcodes.restaurant.domain.Restaurant;
+import com.wrathcodes.restaurant.domain.Menu;
 
 @ManagedBean
 @SessionScoped
@@ -18,8 +18,7 @@ import com.wrathcodes.restaurant.domain.Restaurant;
 public class CategoryBean implements Serializable {
 	private Category category;
 	private List<Category> categories;
-
-	private Restaurant currentRestaurant;
+	private Menu menu;
 
 	public Category getCategory() {
 		return category;
@@ -37,27 +36,28 @@ public class CategoryBean implements Serializable {
 		this.categories = categories;
 	}
 
-	public void setCurrentRestaurant(Restaurant restaurant) {
-		this.currentRestaurant = restaurant;
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 
-	public Restaurant getCurrentRestaurant() {
-		return currentRestaurant;
+	public Menu getMenu() {
+		return menu;
 	}
 
 	@PostConstruct
 	public void list() {
 		try {
 			CategoryDAO categoryDAO = new CategoryDAO();
-			categories = categoryDAO.list(currentRestaurant.getCode());
+			categories = categoryDAO.list(menu.getCode());
+			System.out.println("Categories: " + categories);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void add() {
-		category = new Category(currentRestaurant);
-		category.setRestaurant(currentRestaurant);
+		category = new Category();
+		category.setMenu(menu);
 	}
 
 	public void save() {
@@ -75,7 +75,6 @@ public class CategoryBean implements Serializable {
 	public void delete(ActionEvent event) {
 		try {
 			category = (Category) event.getComponent().getAttributes().get("selectedCategory");
-
 			CategoryDAO categoryDAO = new CategoryDAO();
 			categoryDAO.delete(category);
 

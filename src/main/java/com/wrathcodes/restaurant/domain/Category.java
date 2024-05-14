@@ -17,19 +17,19 @@ public class Category extends GenericDomain {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Restaurant restaurant;
+	private Menu menu;
 
 	public Category() {
 	}
 
-	public Category(Restaurant restaurant) {
-		this.restaurant = restaurant;
+	public Category(Menu menu) {
+		this.menu = menu;
 	}
 
-	public Category(String name, String description, Restaurant restaurant) {
+	public Category(String name, String description, Menu menu) {
 		this.name = name;
 		this.description = description;
-		this.restaurant = restaurant;
+		this.menu = menu;
 	}
 
 	public String getName() {
@@ -48,11 +48,11 @@ public class Category extends GenericDomain {
 		this.description = description;
 	}
 
-	public Restaurant getRestaurant() {
-		return restaurant;
+	public Menu getMenu() {
+		return menu;
 	}
 
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 }

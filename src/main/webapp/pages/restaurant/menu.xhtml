@@ -7,7 +7,7 @@
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
-        <title>#{categoryBean.currentRestaurant.name} -
+        <title>#{menuBean.menu.restaurant.name} -
             #{menuBean.menu.name}</title>
     </ui:define>
 
@@ -22,40 +22,66 @@
                 <div class="card">
                     <h1 class="text-2xl font-bold py-1">#{menuBean.menu.name}</h1>
                     <h2 class="text-lg font-medium py-1">#{menuBean.menu.description}</h2>
+
+
+
+
                     <p:tabView value="#{categoryBean.categories}" id="categoryTabView" dynamic="true" cache="true"
                         var="category">
                         <p:ajax event="tabChange" listener="#{menuItemBean.list}" />
-                        <p:tab title="#{category.name}" id="categoryTab">
-                            <p:dataTable value="#{menuItemBean.items}" id="menuItemTreeTable" var="item"
-                                emptyMessage="No items found" lazy="true" rowKey="#{item.code}"
-                                rowStyleClass="#{item.category == category ? '' : 'ui-helper-hidden'}">
 
-                                <p:column headerText="Name">
-                                    <h:outputText value="#{item.name}" id="itemName" />
-                                    <p:tooltip for="itemName" value="#{item.description}" position="top" />
-                                </p:column>
-                                <p:column headerText="Price">
-                                    <h:outputText value="#{item.price}">
-                                        <f:convertNumber currencySymbol="$" type="currency" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Available">
-                                    <h:outputText value="#{item.available}" />
-                                </p:column>
-                                <p:column headerText="Kitchen">
-                                    <h:outputText value="#{item.kitchen}" />
-                                </p:column>
-                                <!-- <p:column style="width:3rem">
+
+                        <!-- Category Tabs -->
+                        <p:tab title="#{category.name}" id="categoryTab" titletip="#{category.description}">
+
+
+                            <p:panel header="#{menuBean.menu.name} - #{menuBean.menu.description}" styleClass="p-3">
+                                <!-- Menu Item DataTable -->
+                                <p:dataTable value="#{menuItemBean.items}" id="menuItemTreeTable" var="item"
+                                    emptyMessage="No items found" lazy="true" rowKey="#{item.code}"
+                                    rowStyleClass="#{item.category == category ? '' : 'ui-helper-hidden'}">
+
+                                    <!-- Add Category button -->
+                                    <f:facet name="header">
+                                        <p:commandButton value="Add Category"
+                                            oncomplete="PF('addCategoryDialog').show();"
+                                            actionListener="#{categoryBean.add}" icon="fa fa-plus"
+                                            update=":listItemsForm:categoryTabView">
+                                            <f:actionListener
+                                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                        </p:commandButton>
+                                    </f:facet>
+
+                                    <p:column headerText="Name">
+                                        <h:outputText value="#{item.name}" id="itemName" />
+                                        <p:tooltip for="itemName" value="#{item.description} #{item.ingredients}"
+                                            position="top" />
+                                    </p:column>
+                                    <p:column headerText="Price">
+                                        <h:outputText value="#{item.price}">
+                                            <f:convertNumber currencySymbol="$" type="currency" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Available">
+                                        <h:outputText value="#{item.available == 'true' ? 'Yes' : 'No'}"
+                                            styleClass="#{item.available == 'true' ? 'text-green-500' : 'text-red-500'}" />
+                                    </p:column>
+                                    <p:column headerText="Kitchen">
+                                        <h:outputText value="#{item.kitchen == 'true' ? 'Yes' : 'No'}"
+                                            styleClass="#{item.kitchen == 'true' ? 'text-green-500' : 'text-red-500'}" />
+                                    </p:column>
+                                    <!-- <p:column style="width:3rem">
                                     <p:commandButton update=":form:itemPanel" oncomplete="PF('itemDialog').show()"
                                         title="View Detail" icon="pi pi-search">
                                         <f:setPropertyActionListener value="#{item}" target="#{menuItemBean.item}" />
                                     </p:commandButton>
                                 </p:column> -->
 
-                            </p:dataTable>
+                                </p:dataTable>
+                            </p:panel>
 
-                            <!-- <p:dialog id="dialog" header="Dish" showEffect="fade" widgetVar="itemDialog" modal="true"
-                                resizable="false">
+                            <!-- <p:dialog id="addCategoryDialog" header="Dish" showEffect="fade" widgetVar="itemDialog"
+                                modal="true" resizable="false">
                                 <p:outputPanel id="itemPanel">
                                     <h:panelGrid columns="2" cellpadding="7" rendered="#{not empty menuItemBean.item}">
                                         <h:outputLabel for="name" value="Name" styleClass="text-secondary" />
@@ -79,6 +105,30 @@
                     </p:tabView>
                 </div>
             </h:form>
+
+
+            <!-- Add Category Modal -->
+            <p:dialog header="Category - Add" widgetVar="addCategoryDialog" modal="true" resizable="false"
+                draggable="false" showEffect="fade" hideEffect="fade" closable="false">
+                <h:form id="addCategoryForm">
+                    <h:panelGrid columns="1" id="addCategoryPanelGrid">
+                        <p:outputLabel value="Name" />
+                        <p:inputText id="nome" maxlength="50" size="30" value="#{categoryBean.category.name}"
+                            required="true" requiredMessage="O campo Nome é obrigatório." />
+
+                        <p:outputLabel value="Description" />
+                        <p:inputText id="descricao" maxlength="50" size="30"
+                            value="#{categoryBean.category.description}" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Save" actionListener="#{categoryBean.save}"
+                            update=":dialogMessage :addCategoryForm:addCategoryPanelGrid :listItemsForm:categoryTabView">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </p:commandButton>
+                        <p:commandButton value=" Close" oncomplete="PF('addCategoryDialog').hide();" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
         </div>
     </ui:define>
 </ui:composition>

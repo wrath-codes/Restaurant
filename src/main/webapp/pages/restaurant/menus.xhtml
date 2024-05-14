@@ -53,8 +53,9 @@
                         </p:column>
 
                         <p:column headerText="Available" sortBy="#{menu.available}" filterBy="#{menu.available}">
-                            <h:outputText rendered="#{menu.available == 'true'}" value="Yes" />
-                            <h:outputText rendered="#{menu.available == 'false'}" value="No" />
+
+                            <h:outputText value="#{menu.available == 'true' ? 'Yes' : 'No'}"
+                                styleClass="#{menu.available == 'true' ? 'text-green-500' : 'text-red-500'}" />
                         </p:column>
 
 
@@ -63,8 +64,7 @@
                                 <p:commandButton icon="fa fa-eye" style="margin-right: 5px;"
                                     actionListener="#{menuBean.view}" ajax="false">
                                     <f:setPropertyActionListener target="#{menuBean.menu}" value="#{menu}" />
-                                    <f:setPropertyActionListener target="#{categoryBean.currentRestaurant}"
-                                        value="#{menu.restaurant}" />
+                                    <f:setPropertyActionListener target="#{categoryBean.menu}" value="#{menu}" />
                                     <f:setPropertyActionListener target="#{menuItemBean.menu}" value="#{menu}" />
                                 </p:commandButton>
 
