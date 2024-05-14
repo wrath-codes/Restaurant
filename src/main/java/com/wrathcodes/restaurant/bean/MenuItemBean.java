@@ -8,6 +8,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Messages;
+
 import com.wrathcodes.restaurant.dao.MenuItemDAO;
 import com.wrathcodes.restaurant.domain.Menu;
 import com.wrathcodes.restaurant.domain.MenuItem;
@@ -49,7 +51,12 @@ public class MenuItemBean implements Serializable {
 		try {
 			MenuItemDAO itemDAO = new MenuItemDAO();
 			items = itemDAO.list(menu.getCode());
+			System.out.println("Restaurant: " + menu.getRestaurant().getName());
+			System.out.println("Menu: " + menu.getName());
+			System.out.println("Dishes Total: " + items.size());
+			System.out.println("Dishes: " + items);
 		} catch (RuntimeException e) {
+			Messages.addGlobalError("An error occurred while trying to list the menu items");
 			e.printStackTrace();
 		}
 	}

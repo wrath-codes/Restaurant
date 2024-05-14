@@ -1,118 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html
-	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    template="/templates/model.xhtml">
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" template="/templates/model.xhtml">
     <ui:define name="title">
         <title>Restaurants - List</title>
     </ui:define>
     <ui:define name="content">
         <h:form id="formListRestaurants" class="py-5">
             <p:panel header="Restaurants - List">
-                <p:dataTable
-                    emptyMessage="No Restaurants Records Found."
-                    paginator="true" paginatorPosition="bottom"
-                    value="#{restaurantBean.restaurants}"
-                    var="restaurantCursor" rows="5"
-                    id="restaurantsDataTable">
+                <p:dataTable emptyMessage="No Restaurants Records Found." paginator="true" paginatorPosition="bottom"
+                    value="#{restaurantBean.restaurants}" var="restaurantCursor" rows="5" id="restaurantsDataTable">
                     <f:facet name="header">
-                        <p:commandButton value="Add"
-                            oncomplete="PF('addRestaurantDialog').show();"
-                            actionListener="#{restaurantBean.add}"
-                            update=":addRestaurantForm:addRestaurantPanelGrid">
-                            <f:actionListener
-                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        <p:commandButton value="Add" oncomplete="PF('addRestaurantDialog').show();"
+                            actionListener="#{restaurantBean.add}" update=":addRestaurantForm:addRestaurantPanelGrid">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </p:commandButton>
                     </f:facet>
 
 
-                    <p:column headerText="Name"
-                        sortBy="#{restaurantCursor.name}"
-                        filterBy="#{restaurantCursor.name}">
+                    <p:column headerText="Name" sortBy="#{restaurantCursor.name}" filterBy="#{restaurantCursor.name}">
                         <h:outputText value="#{restaurantCursor.name}" />
                     </p:column>
 
                     <p:column headerText="Table Count">
-                        <h:outputText
-                            value="#{restaurantBean.tableCount(restaurantCursor.code)}" />
+                        <h:outputText value="#{restaurantBean.tableCount(restaurantCursor.code)}" />
                     </p:column>
 
                     <p:column headerText="Options">
-                        <p:commandButton icon="pi pi-eye"
-                            style="margin-right: 5px;"
-                            actionListener="#{restaurantBean.view(restaurantCursor)}"
-                            ajax="false">
-                            <f:setPropertyActionListener
-                                target="#{restaurantTableBean.currentRestaurant}"
+                        <p:commandButton icon="fa fa-eye" style="margin-right: 5px;"
+                            actionListener="#{restaurantBean.view(restaurantCursor)}" ajax="false">
+                            <f:setPropertyActionListener target="#{restaurantTableBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
-                            <f:setPropertyActionListener
-                                target="#{menuBean.currentRestaurant}"
+                            <f:setPropertyActionListener target="#{menuBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
-                            <f:setPropertyActionListener
-                                target="#{customerBean.currentRestaurant}"
+                            <f:setPropertyActionListener target="#{customerBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
-                            <f:setPropertyActionListener
-                                target="#{categoryBean.currentRestaurant}"
+                            <f:setPropertyActionListener target="#{categoryBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
                         </p:commandButton>
 
-                        <p:commandButton icon="pi pi-pencil"
-                            style="margin-right: 5px; margin-left: 5px;"
-                            actionListener="#{restaurantBean.edit}"
-                            update=":addRestaurantForm:addRestaurantPanelGrid"
+                        <p:commandButton icon="fa fa-pencil-alt" style="margin-right: 5px; margin-left: 5px;"
+                            actionListener="#{restaurantBean.edit}" update=":addRestaurantForm:addRestaurantPanelGrid"
                             oncomplete="PF('addRestaurantDialog').show();">
-                            <f:attribute name="selectedRestaurant"
-                                value="#{restaurantCursor}" />
+                            <f:attribute name="selectedRestaurant" value="#{restaurantCursor}" />
                         </p:commandButton>
 
-                        <p:commandButton icon="pi pi-trash"
-                            style="margin-right: 5px; margin-left: 5px;"
+                        <p:commandButton icon="fa fa-trash-alt" style="margin-right: 5px; margin-left: 5px;"
                             actionListener="#{restaurantBean.delete}"
                             update=":dialogMessage :formListRestaurants:restaurantsDataTable">
-                            <p:confirm header="Confirmation"
-                                message="Are you sure?"
-                                icon="ui-icon-alert" />
-                            <f:attribute name="selectedRestaurant"
-                                value="#{restaurantCursor}" />
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            <f:attribute name="selectedRestaurant" value="#{restaurantCursor}" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
 
-                <p:confirmDialog global="true" showEffect="fade"
-                    hideEffect="fade">
-                    <p:commandButton value="Yes" type="button"
-                        styleClass="ui-confirmdialog-yes"
-                        icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button"
-                        styleClass="ui-confirmdialog-no"
-                        icon="ui-icon-close" />
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
             </p:panel>
         </h:form>
 
         <!-- Add Restaurant Modal -->
-        <p:dialog header="Restaurant - Add"
-            widgetVar="addRestaurantDialog" modal="true"
-            resizable="false" draggable="false" showEffect="fade"
-            hideEffect="fade" closable="false">
+        <p:dialog header="Restaurant - Add" widgetVar="addRestaurantDialog" modal="true" resizable="false"
+            draggable="false" showEffect="fade" hideEffect="fade" closable="false">
             <h:form id="addRestaurantForm">
                 <h:panelGrid columns="1" id="addRestaurantPanelGrid">
                     <p:outputLabel value="Name" />
-                    <p:inputText id="nome" maxlength="50" size="30"
-                        value="#{restaurantBean.restaurant.name}"
-                        required="true"
-                        requiredMessage="O campo Nome é obrigatório." />
+                    <p:inputText id="nome" maxlength="50" size="30" value="#{restaurantBean.restaurant.name}"
+                        required="true" requiredMessage="O campo Nome é obrigatório." />
                 </h:panelGrid>
                 <h:panelGrid columns="2">
-                    <p:commandButton value="Save"
-                        actionListener="#{restaurantBean.save}"
+                    <p:commandButton value="Save" actionListener="#{restaurantBean.save}"
                         update=":dialogMessage :addRestaurantForm:addRestaurantPanelGrid :formListRestaurants:restaurantsDataTable" />
-                    <p:commandButton value=" Close"
-                        oncomplete="PF('addRestaurantDialog').hide();" />
+                    <p:commandButton value=" Close" oncomplete="PF('addRestaurantDialog').hide();" />
                 </h:panelGrid>
             </h:form>
         </p:dialog>

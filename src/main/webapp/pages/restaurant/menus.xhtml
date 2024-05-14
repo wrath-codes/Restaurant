@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    template="/templates/restaurant_model.xhtml">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" template="/templates/restaurant_model.xhtml">
 
     <ui:define name="titleRestaurant">
         <!-- <p:outputLabel value="#{restaurantBean.restaurantSelected.name}" /> -->
@@ -14,8 +12,7 @@
 
     <ui:define name="content-restaurant">
         <f:metadata>
-            <f:viewParam name="restaurantCode"
-                value="#{menuBean.currentRestaurant.code}" />
+            <f:viewParam name="restaurantCode" value="#{menuBean.currentRestaurant.code}" />
             <f:event type="preRenderView" listener="#{menuBean.list}" />
         </f:metadata>
         <div id="overview" class="bg-gray-900 h-screen">
@@ -23,10 +20,8 @@
                 <div class="flex space-between">
                     <div class="space-x-2"></div>
                     <div class="space-x-2">
-                        <h:outputText
-                            value="#{menuBean.currentRestaurant.name} " />
-                        <h:outputText
-                            value="#{menuBean.currentRestaurant.code} - Menus" />
+                        <h:outputText value="#{menuBean.currentRestaurant.name} " />
+                        <h:outputText value="#{menuBean.currentRestaurant.code} - Menus" />
 
 
                     </div>
@@ -34,153 +29,101 @@
             </h:form>
 
             <h:form id="listMenusForm" class="py-5">
-                <p:panel
-                    header="#{menuBean.currentRestaurant.name} - Menus"
-                    styleClass="p-3">
-                    <p:dataTable id="listMenus" var="menu"
-                        value="#{menuBean.menus}" paginator="true"
-                        rows="10" paginatorPosition="bottom"
-                        emptyMessage="No menus found for #{menuBean.currentRestaurant.name}">
+                <p:panel header="#{menuBean.currentRestaurant.name} - Menus" styleClass="p-3">
+                    <p:dataTable id="listMenus" var="menu" value="#{menuBean.menus}" paginator="true" rows="10"
+                        paginatorPosition="bottom" emptyMessage="No menus found for #{menuBean.currentRestaurant.name}">
 
                         <f:facet name="header">
-                            <p:commandButton value="Add"
-                                oncomplete="PF('addMenuDialog').show();"
-                                actionListener="#{menuBean.add}"
-                                update=":addMenuForm:addMenuPanelGrid">
-                                <f:actionListener
-                                    type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            <p:commandButton value="Add" oncomplete="PF('addMenuDialog').show();"
+                                actionListener="#{menuBean.add}" update=":addMenuForm:addMenuPanelGrid">
+                                <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                             </p:commandButton>
                         </f:facet>
 
-                        <p:column headerText="Name"
-                            sortBy="#{menu.name}"
-                            filterBy="#{menu.name}">
+                        <p:column headerText="Name" sortBy="#{menu.name}" filterBy="#{menu.name}">
                             <h:outputText value="#{menu.name}" />
                         </p:column>
 
-                        <p:column headerText="Description"
-                            sortBy="#{menu.description}"
-                            filterBy="#{menu.description}">
+                        <p:column headerText="Description" sortBy="#{menu.description}" filterBy="#{menu.description}">
                             <h:outputText value="#{menu.description}" />
                         </p:column>
 
-                        <p:column headerText="Season"
-                            sortBy="#{menu.season}"
-                            filterBy="#{menu.season}">
+                        <p:column headerText="Season" sortBy="#{menu.season}" filterBy="#{menu.season}">
                             <h:outputText value="#{menu.season}" />
                         </p:column>
 
-                        <p:column headerText="Available"
-                            sortBy="#{menu.available}"
-                            filterBy="#{menu.available}">
-                            <h:outputText
-                                rendered="#{menu.available == 'true'}"
-                                value="Yes" />
-                            <h:outputText
-                                rendered="#{menu.available == 'false'}"
-                                value="No" />
+                        <p:column headerText="Available" sortBy="#{menu.available}" filterBy="#{menu.available}">
+                            <h:outputText rendered="#{menu.available == 'true'}" value="Yes" />
+                            <h:outputText rendered="#{menu.available == 'false'}" value="No" />
                         </p:column>
 
 
                         <p:column headerText="Actions">
                             <div class="flex space-x-2">
-                                <p:commandButton icon="pi pi-eye"
-                                    style="margin-right: 5px;"
-                                    actionListener="#{menuBean.view}"
-                                    ajax="false">
-                                    <f:setPropertyActionListener
-                                        target="#{menuBean.menu}"
-                                        value="#{menu}" />
-                                    <f:setPropertyActionListener
-                                        target="#{categoryBean.currentRestaurant}"
+                                <p:commandButton icon="fa fa-eye" style="margin-right: 5px;"
+                                    actionListener="#{menuBean.view}" ajax="false">
+                                    <f:setPropertyActionListener target="#{menuBean.menu}" value="#{menu}" />
+                                    <f:setPropertyActionListener target="#{categoryBean.currentRestaurant}"
                                         value="#{menu.restaurant}" />
-                                    <f:setPropertyActionListener
-                                        target="#{menuItemBean.menu}"
-                                        value="#{menu}" />
+                                    <f:setPropertyActionListener target="#{menuItemBean.menu}" value="#{menu}" />
                                 </p:commandButton>
 
-                                <p:commandButton icon="fa fa-pencil"
-                                    title="Edit"
-                                    actionListener="#{menuBean.edit}"
+                                <p:commandButton icon="fa fa-pencil-alt" title="Edit" actionListener="#{menuBean.edit}"
                                     update=":dialogMessage 
-                                    :addMenuForm:addMenuPanelGrid"
-                                    oncomplete="PF('addMenuDialog').show();">
-                                    <f:attribute name="selectedMenu"
-                                        value="#{menu}" />
-                                    <f:actionListener
-                                        type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                    :addMenuForm:addMenuPanelGrid" oncomplete="PF('addMenuDialog').show();">
+                                    <f:attribute name="selectedMenu" value="#{menu}" />
+                                    <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                                 </p:commandButton>
 
-                                <p:commandButton icon="fa fa-trash"
-                                    title="Delete"
-                                    actionListener="#{menuBean.delete}"
-                                    update=":dialogMessage
+                                <p:commandButton icon="fa fa-trash-alt" title="Delete"
+                                    actionListener="#{menuBean.delete}" update=":dialogMessage
                             :listMenusForm:listMenus">
 
                                     <p:confirm header="Confirmation"
                                         message="Are you sure you want to delete this menu?"
-                                        icon="fa fa-exclamation-triangle"
-                                        style="font-size: 10px;" />
-                                    <f:attribute name="selectedMenu"
-                                        value="#{menu}" />
+                                        icon="fa fa-exclamation-triangle" style="font-size: 10px;" />
+                                    <f:attribute name="selectedMenu" value="#{menu}" />
 
                                 </p:commandButton>
                             </div>
                         </p:column>
                     </p:dataTable>
 
-                    <p:confirmDialog global="true" showEffect="fade"
-                        hideEffect="fade">
-                        <p:commandButton value="Yes" type="button"
-                            styleClass="ui-confirmdialog-yes"
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"
                             icon="fa fa-check" />
-                        <p:commandButton value="No" type="button"
-                            styleClass="ui-confirmdialog-no"
-                            icon="fa fa-ban" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-ban" />
                     </p:confirmDialog>
                 </p:panel>
             </h:form>
 
-            <p:dialog header="Menu - Add" widgetVar="addMenuDialog"
-                modal="true" resizable="false" draggable="false"
+            <p:dialog header="Menu - Add" widgetVar="addMenuDialog" modal="true" resizable="false" draggable="false"
                 showEffect="fade" hideEffect="fade" closable="false">
                 <h:form id="addMenuForm">
                     <h:panelGrid columns="2" id="addMenuPanelGrid">
                         <p:outputLabel value="Name" />
-                        <p:inputText id="name" maxlength="50" size="30"
-                            value="#{menuBean.menu.name}"
-                            required="true"
+                        <p:inputText id="name" maxlength="50" size="30" value="#{menuBean.menu.name}" required="true"
                             requiredMessage="O campo Name é obrigatório." />
 
                         <p:outputLabel value="Description" />
-                        <p:inputText id="description" maxlength="50"
-                            size="30"
-                            value="#{menuBean.menu.description}"
-                            required="true"
-                            requiredMessage="O campo Description é obrigatório." />
+                        <p:inputText id="description" maxlength="50" size="30" value="#{menuBean.menu.description}"
+                            required="true" requiredMessage="O campo Description é obrigatório." />
 
                         <p:outputLabel value="Season" />
-                        <p:inputText id="Season" maxlength="50"
-                            size="30" value="#{menuBean.menu.season}"
-                            required="true"
-                            requiredMessage="O campo Season é obrigatório." />
+                        <p:inputText id="Season" maxlength="50" size="30" value="#{menuBean.menu.season}"
+                            required="true" requiredMessage="O campo Season é obrigatório." />
 
                         <p:outputLabel value="Available" />
-                        <p:selectBooleanCheckbox id="available"
-                            value="#{menuBean.menu.available}"
-                            required="true" />
+                        <p:selectBooleanCheckbox id="available" value="#{menuBean.menu.available}" required="true" />
 
 
                     </h:panelGrid>
                     <h:panelGrid columns="2">
-                        <p:commandButton value="Save"
-                            actionListener="#{menuBean.save}"
+                        <p:commandButton value="Save" actionListener="#{menuBean.save}"
                             update=":dialogMessage :addMenuForm:addMenuPanelGrid :listMenusForm:listMenus">
-                            <f:actionListener
-                                type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </p:commandButton>
-                        <p:commandButton value=" Close"
-                            oncomplete="PF('addMenuDialog').hide();">
+                        <p:commandButton value=" Close" oncomplete="PF('addMenuDialog').hide();">
                         </p:commandButton>
 
                     </h:panelGrid>
