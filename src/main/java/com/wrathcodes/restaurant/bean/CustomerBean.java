@@ -60,7 +60,7 @@ public class CustomerBean implements Serializable {
 	public void list() {
 		try {
 			CustomerDAO customerDAO = new CustomerDAO();
-			customers = customerDAO.list();
+			customers = customerDAO.list(currentRestaurant.getCode());
 		} catch (RuntimeException error) {
 			Messages.addGlobalError("An error occurred while trying to list customers");
 			error.printStackTrace();

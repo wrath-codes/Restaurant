@@ -12,9 +12,9 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
+import com.wrathcodes.restaurant.domain.Restaurant;
 import com.wrathcodes.restaurant.dao.RestaurantDAO;
 import com.wrathcodes.restaurant.dao.RestaurantTableDAO;
-import com.wrathcodes.restaurant.domain.Restaurant;
 import com.wrathcodes.restaurant.util.DatabaseUtil;
 
 @ManagedBean
@@ -69,7 +69,7 @@ public class RestaurantBean implements Serializable {
 
 	public void seedAll() {
 		DatabaseUtil databaseUtil = new DatabaseUtil();
-		databaseUtil.seed();
+		databaseUtil.seed_db();
 	}
 
 	public Integer tableCount(Long code) {

@@ -11,15 +11,18 @@ import com.wrathcodes.restaurant.util.HibernateUtil;
 
 public class CustomerDAO extends GenericDAO<Customer> {
 	@SuppressWarnings("unchecked")
-	public List<Customer> list(Long RestaurantCode) {
+	public List<Customer> list(Long restaurantCode) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Criteria query = session.createCriteria(Customer.class);
-			query.add(Restrictions.eq("seatedAt.restaurant.code", RestaurantCode));
+			Criteria customerCriteria = session.createCriteria(Customer.class);
+			Criteria tableCriteria = customerCriteria.createCriteria("seatedAt");
+			tableCriteria.add(Restrictions.eq("restaurant.code", restaurantCode));
+			
+			List<Customer> result = customerCriteria.list();
 
-			List<Customer> result = query.list();
-			System.out.println("Restaurant code: " + RestaurantCode);
-			System.out.println("Result: " + result);
+			System.out.println("Restaurant code: " + restaurantCode);
+			System.out.println("Customers: " + result);
+
 			return result;
 		} catch (RuntimeException e) {
 			throw e;
@@ -29,17 +32,18 @@ public class CustomerDAO extends GenericDAO<Customer> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Customer> list(Long RestaurantCode, Long TableCode) {
+	public List<Customer> list(Long restaurantCode, Long tableCode) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Criteria query = session.createCriteria(Customer.class);
-			query.add(Restrictions.eq("seatedAt.restaurant.code", RestaurantCode));
-			query.add(Restrictions.eq("seatedAt.code", TableCode));
-
-			List<Customer> result = query.list();
-			System.out.println("Restaurant code: " + RestaurantCode);
-			System.out.println("Table code: " + TableCode);
-			System.out.println("Result: " + result);
+			Criteria customerCriteria = session.createCriteria(Customer.class);
+			Criteria tableCriteria = customerCriteria.createCriteria("seatedAt");
+			tableCriteria.add(Restrictions.eq("restaurant.code", restaurantCode));
+			tableCriteria.add(Restrictions.eq("code", tableCode));
+			
+			List<Customer> result = customerCriteria.list();
+			System.out.println("Restaurant code: " + restaurantCode);
+			System.out.println("Table code: " + tableCode);
+			System.out.println("Customers: " + result);
 			return result;
 		} catch (RuntimeException e) {
 			throw e;

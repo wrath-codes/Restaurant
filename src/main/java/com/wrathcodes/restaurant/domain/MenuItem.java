@@ -1,14 +1,10 @@
 package com.wrathcodes.restaurant.domain;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @SuppressWarnings("serial")
@@ -37,8 +33,6 @@ public class MenuItem extends GenericDomain {
     @ManyToOne
     private Category category;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
-    private Set<Ingredient> ingredients;
 
     public String getName() {
         return name;
@@ -94,13 +88,5 @@ public class MenuItem extends GenericDomain {
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(Set<Ingredient> ingredients) {
-        this.ingredients = ingredients;
     }
 }

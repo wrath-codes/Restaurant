@@ -1,15 +1,12 @@
 package com.wrathcodes.restaurant.dao;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.wrathcodes.restaurant.domain.Category;
-import com.wrathcodes.restaurant.domain.Ingredient;
 import com.wrathcodes.restaurant.domain.Menu;
 import com.wrathcodes.restaurant.domain.MenuItem;
 
@@ -21,25 +18,8 @@ public class MenuItemDAOTest {
         Long menuCode = 2L;
         Long categoryCode = 1L;
 
-        Long ingredientCode_01 = 1L;
-        Long ingredientCode_02 = 2L;
-        Long ingredientCode_03 = 3L;
-        Long ingredientCode_04 = 4L;
-        Long ingredientCode_05 = 5L;
-
-        IngredientDAO ingredientDAO_01 = new IngredientDAO();
-        IngredientDAO ingredientDAO_02 = new IngredientDAO();
-        IngredientDAO ingredientDAO_03 = new IngredientDAO();
-        IngredientDAO ingredientDAO_04 = new IngredientDAO();
-        IngredientDAO ingredientDAO_05 = new IngredientDAO();
-
-        Ingredient ingredient_01 = ingredientDAO_01.search(ingredientCode_01);
-        Ingredient ingredient_02 = ingredientDAO_02.search(ingredientCode_02);
-        Ingredient ingredient_03 = ingredientDAO_03.search(ingredientCode_03);
-        Ingredient ingredient_04 = ingredientDAO_04.search(ingredientCode_04);
-        Ingredient ingredient_05 = ingredientDAO_05.search(ingredientCode_05);
-
         MenuDAO menuDAO = new MenuDAO();
+
         CategoryDAO categoryDAO = new CategoryDAO();
 
         // get menu
@@ -48,8 +28,7 @@ public class MenuItemDAOTest {
         // get category
         Category category = categoryDAO.search(categoryCode);
 
-        if (menu == null || category == null || ingredient_01 == null || ingredient_02 == null || ingredient_03 == null
-                || ingredient_04 == null || ingredient_05 == null) {
+        if (menu == null || category == null) {
             System.out.println("Menu or category not found, or ingredient not found");
         } else {
             System.out.println("Menu found: " + menu.getName());
@@ -64,14 +43,7 @@ public class MenuItemDAOTest {
             menuItem.setMenu(menu);
             menuItem.setCategory(category);
 
-            Set<Ingredient> ingredients = new HashSet<Ingredient>();
-            ingredients.add(ingredient_01);
-            ingredients.add(ingredient_02);
-            ingredients.add(ingredient_03);
-            ingredients.add(ingredient_04);
-            ingredients.add(ingredient_05);
 
-            menuItem.setIngredients(ingredients);
 
             // create menu item DAO
             MenuItemDAO menuItemDAO = new MenuItemDAO();
@@ -87,7 +59,6 @@ public class MenuItemDAOTest {
                     "│ Kitchen: " + menuItem.getKitchen() + "\n" +
                     "│ Menu: " + menuItem.getMenu().getName() + "\n" +
                     "│ Category: " + menuItem.getCategory().getName() + "\n" +
-                    "│ Ingredients: " + menuItem.getIngredients() + "\n" +
                     "╰────────────────────────────╯");
 
         }

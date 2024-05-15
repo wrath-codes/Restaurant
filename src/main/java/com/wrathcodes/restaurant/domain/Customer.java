@@ -1,5 +1,6 @@
 package com.wrathcodes.restaurant.domain;
 
+import javax.persistence.FetchType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -12,7 +13,7 @@ public class Customer extends GenericDomain {
     @Column(length = 50, nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private RestaurantTable seatedAt;
 
@@ -24,12 +25,12 @@ public class Customer extends GenericDomain {
         this.name = name;
     }
 
-    public RestaurantTable getSeatedAt() {
-        return seatedAt;
-    }
-
-    public void setSeatedAt(RestaurantTable seatedAt) {
-        this.seatedAt = seatedAt;
-    }
+	public RestaurantTable getSeatedAt() {
+		return seatedAt;
+	}
+	
+	public void setSeatedAt(RestaurantTable seatedAt) {
+		this.seatedAt = seatedAt;
+	}
 
 }
