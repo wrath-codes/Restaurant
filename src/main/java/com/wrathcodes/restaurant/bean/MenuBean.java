@@ -16,6 +16,7 @@ import com.wrathcodes.restaurant.dao.MenuDAO;
 import com.wrathcodes.restaurant.domain.Menu;
 import com.wrathcodes.restaurant.domain.Restaurant;
 
+
 @ManagedBean
 @SessionScoped
 @SuppressWarnings("serial")
@@ -83,7 +84,6 @@ public class MenuBean implements Serializable {
 			menuDAO.merge(menu);
 
 			add();
-			System.out.println("Restaurant code: " + menu.getRestaurant().getCode());
 			list();
 
 			Messages.addGlobalInfo("Menu saved successfully");

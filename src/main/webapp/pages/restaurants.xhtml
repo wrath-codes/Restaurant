@@ -4,9 +4,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets" template="/templates/model.xhtml">
-    <ui:define name="title">
-        <title>Restaurants - List</title>
-    </ui:define>
+
     <ui:define name="content">
         <h:form id="formListRestaurants" class="py-5">
             <p:panel header="Restaurants - List">
@@ -36,8 +34,6 @@
                             <f:setPropertyActionListener target="#{menuBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
                             <f:setPropertyActionListener target="#{customerBean.currentRestaurant}"
-                                value="#{restaurantCursor}" />
-                            <f:setPropertyActionListener target="#{categoryBean.currentRestaurant}"
                                 value="#{restaurantCursor}" />
                         </p:commandButton>
 

@@ -1,6 +1,8 @@
 package com.wrathcodes.restaurant.bean;
 
+import org.omnifaces.util.Messages;
 import java.io.Serializable;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -43,13 +45,36 @@ public class CategoryBean implements Serializable {
 	public Menu getMenu() {
 		return menu;
 	}
+	
+	public void create_default_category() {
+		CategoryDAO categoryDAO = new CategoryDAO();
+		List<Category> categories = categoryDAO.list(menu.getCode());
+		if (categories.size() == 0) {
+			category = new Category();
+			category.setName("Default");
+			category.setDescription("Default Description");
+			category.setMenu(menu);
+			categoryDAO.merge(category);
+		} 
+	}
+	
+	public void delete_default_category() {
+		CategoryDAO categoryDAO = new CategoryDAO();
+		List<Category> categories = categoryDAO.list(menu.getCode());
+		Category default_category = categoryDAO.search("Default", menu.getCode());
+		
+		if (categories.size() > 1 && default_category != null) {
+			categoryDAO.delete(default_category);
+		}
+	}
 
 	@PostConstruct
 	public void list() {
 		try {
 			CategoryDAO categoryDAO = new CategoryDAO();
+			delete_default_category();
 			categories = categoryDAO.list(menu.getCode());
-			System.out.println("Categories: " + categories);
+			System.out.println("Categories at list in Bean: " + categories);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
@@ -65,10 +90,12 @@ public class CategoryBean implements Serializable {
 			CategoryDAO categoryDAO = new CategoryDAO();
 			categoryDAO.merge(category);
 
-			category = new Category();
-			categories = categoryDAO.list();
+			add();
+			list();
+			Messages.addGlobalInfo("Category saved successfully");
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			Messages.addGlobalError("Error saving category");
 		}
 	}
 
@@ -78,13 +105,16 @@ public class CategoryBean implements Serializable {
 			CategoryDAO categoryDAO = new CategoryDAO();
 			categoryDAO.delete(category);
 
+			Messages.addGlobalInfo("Category removed successfully");
 			categories = categoryDAO.list();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			Messages.addGlobalError("Error removing category");
 		}
 	}
 
 	public void edit(ActionEvent event) {
 		category = (Category) event.getComponent().getAttributes().get("selectedCategory");
+		System.out.println("Category at Edit in Bean: " + category.getName() + " - " + category.getDescription());
 	}
 }

@@ -9,8 +9,11 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
+import org.primefaces.event.TabChangeEvent;
 
+import com.wrathcodes.restaurant.dao.CategoryDAO;
 import com.wrathcodes.restaurant.dao.MenuItemDAO;
+import com.wrathcodes.restaurant.domain.Category;
 import com.wrathcodes.restaurant.domain.Menu;
 import com.wrathcodes.restaurant.domain.MenuItem;
 
@@ -21,6 +24,7 @@ public class MenuItemBean implements Serializable {
 	private MenuItem item;
 	private List<MenuItem> items;
 	private Menu menu;
+	private Category category;
 
 	public MenuItem getItem() {
 		return item;
@@ -45,6 +49,15 @@ public class MenuItemBean implements Serializable {
 	public void setMenu(Menu menu) {
 		this.menu = menu;
 	}
+	
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 
 	@PostConstruct
 	public void list() {
@@ -60,6 +73,11 @@ public class MenuItemBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateCategory(TabChangeEvent<?> event) {
+		CategoryDAO categoryDAO = new CategoryDAO();
+		category = categoryDAO.search(event.getTab().getTitle(), menu.getCode());
+	}
 
 	public void list(Long categoryCode) {
 		try {
@@ -73,6 +91,7 @@ public class MenuItemBean implements Serializable {
 	public void add() {
 		item = new MenuItem();
 		item.setMenu(menu);
+		item.setCategory(category);
 	}
 
 	public void save() {

@@ -15,7 +15,7 @@ import org.omnifaces.util.Messages;
 import com.wrathcodes.restaurant.domain.Restaurant;
 import com.wrathcodes.restaurant.dao.RestaurantDAO;
 import com.wrathcodes.restaurant.dao.RestaurantTableDAO;
-import com.wrathcodes.restaurant.util.DatabaseUtil;
+//import com.wrathcodes.restaurant.util.DatabaseUtil;
 
 @ManagedBean
 @SessionScoped
@@ -67,10 +67,6 @@ public class RestaurantBean implements Serializable {
 		FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/overview.xhtml");
 	}
 
-	public void seedAll() {
-		DatabaseUtil databaseUtil = new DatabaseUtil();
-		databaseUtil.seed_db();
-	}
 
 	public Integer tableCount(Long code) {
 		RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();

@@ -19,8 +19,24 @@ public class CategoryDAO extends GenericDAO<Category> {
 			query.add(Restrictions.eq("menu.code", menuCode));
 
 			List<Category> result = query.list();
-			System.out.println("Menu Code: " + menuCode);
-			System.out.println("Categories: " + result);
+			return result;
+		} catch (RuntimeException e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Category search(String name, Long menuCode) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			Criteria query = session.createCriteria(Category.class);
+			query.add(Restrictions.eq("name", name));
+			query.add(Restrictions.eq("menu.code", menuCode));
+			Category result = (Category) query.uniqueResult();
+			
+			System.out.println("Category at Search in DAO: " + result);
+
 			return result;
 		} catch (RuntimeException e) {
 			throw e;
