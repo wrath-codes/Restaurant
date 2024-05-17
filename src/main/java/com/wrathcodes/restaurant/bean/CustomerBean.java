@@ -1,12 +1,15 @@
 package com.wrathcodes.restaurant.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
 
 import org.omnifaces.util.Messages;
 
@@ -54,6 +57,16 @@ public class CustomerBean implements Serializable {
 
 	public void setCurrentRestaurant(Restaurant currentRestaurant) {
 		this.currentRestaurant = currentRestaurant;
+	}
+	
+	public void view(ActionEvent event) throws IOException {
+		try {
+			customer = (Customer) event.getComponent().getAttributes().get("selectedCustomer");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/customer.xhtml");
+		} catch (RuntimeException error) {
+			Messages.addGlobalError("An error occurred while trying to list customers");
+			error.printStackTrace();
+		}
 	}
 
 	@PostConstruct

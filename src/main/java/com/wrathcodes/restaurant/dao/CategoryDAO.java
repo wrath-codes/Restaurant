@@ -44,5 +44,4 @@ public class CategoryDAO extends GenericDAO<Category> {
 			session.close();
 		}
 	}
-
 }

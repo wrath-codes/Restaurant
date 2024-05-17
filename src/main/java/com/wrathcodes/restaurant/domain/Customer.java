@@ -16,6 +16,9 @@ public class Customer extends GenericDomain {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private RestaurantTable seatedAt;
+    
+    @Column(nullable = false)
+    private Boolean active = true;
 
     public String getName() {
         return name;
@@ -32,5 +35,12 @@ public class Customer extends GenericDomain {
 	public void setSeatedAt(RestaurantTable seatedAt) {
 		this.seatedAt = seatedAt;
 	}
-
+	
+	public Boolean getActive() {
+		return active;
+	}
+	
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 }

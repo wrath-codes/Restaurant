@@ -72,12 +72,16 @@ public class RestaurantBean implements Serializable {
 		RestaurantTableDAO restaurantTableDAO = new RestaurantTableDAO();
 		return restaurantTableDAO.list(code).size();
 	}
-
+	
 	@PostConstruct
 	public void list() {
 		try {
 			RestaurantDAO restaurantDAO = new RestaurantDAO();
 			restaurants = restaurantDAO.list();
+			System.out.println("Restaurants Total: " + restaurants.size());
+			for (Restaurant restaurant : restaurants) {
+				System.out.println("Code: " + restaurant.getCode() + " - " + restaurant.getName());
+			}
 		} catch (RuntimeException error) {
 			Messages.addGlobalError("Error trying to list restaurants!");
 			error.printStackTrace();

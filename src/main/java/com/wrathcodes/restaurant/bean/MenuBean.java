@@ -1,6 +1,7 @@
 package com.wrathcodes.restaurant.bean;
 
 import java.io.IOException;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,7 +13,10 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
+import com.wrathcodes.restaurant.domain.Category;
+import com.wrathcodes.restaurant.dao.CategoryDAO;
 import com.wrathcodes.restaurant.dao.MenuDAO;
+import com.wrathcodes.restaurant.dao.MenuItemDAO;
 import com.wrathcodes.restaurant.domain.Menu;
 import com.wrathcodes.restaurant.domain.Restaurant;
 
@@ -96,6 +100,16 @@ public class MenuBean implements Serializable {
 	public void delete(ActionEvent event) {
 		try {
 			menu = (Menu) event.getComponent().getAttributes().get("selectedMenu");
+			CategoryDAO categoryDAO = new CategoryDAO();
+			List<Category> categories = categoryDAO.list(menu.getCode());
+			
+			MenuItemDAO itemDAO = new MenuItemDAO();
+			
+			for (Category category : categories) {
+				itemDAO.delete(category.getCode());
+				categoryDAO.delete(category);
+			}
+			
 
 			MenuDAO menuDAO = new MenuDAO();
 			menuDAO.delete(menu);

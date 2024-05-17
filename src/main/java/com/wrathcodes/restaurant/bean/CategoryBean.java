@@ -11,6 +11,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 
 import com.wrathcodes.restaurant.dao.CategoryDAO;
+import com.wrathcodes.restaurant.dao.MenuItemDAO;
 import com.wrathcodes.restaurant.domain.Category;
 import com.wrathcodes.restaurant.domain.Menu;
 
@@ -45,7 +46,7 @@ public class CategoryBean implements Serializable {
 	public Menu getMenu() {
 		return menu;
 	}
-	
+
 	public void create_default_category() {
 		CategoryDAO categoryDAO = new CategoryDAO();
 		List<Category> categories = categoryDAO.list(menu.getCode());
@@ -55,17 +56,17 @@ public class CategoryBean implements Serializable {
 			category.setDescription("Default Description");
 			category.setMenu(menu);
 			categoryDAO.merge(category);
-		} 
+		}
 	}
-	
+
 	public void delete_default_category() {
 		CategoryDAO categoryDAO = new CategoryDAO();
 		List<Category> categories = categoryDAO.list(menu.getCode());
 		Category default_category = categoryDAO.search("Default", menu.getCode());
-		
+
 		if (categories.size() > 1 && default_category != null) {
 			categoryDAO.delete(default_category);
-		}
+		} 
 	}
 
 	@PostConstruct
@@ -89,9 +90,11 @@ public class CategoryBean implements Serializable {
 		try {
 			CategoryDAO categoryDAO = new CategoryDAO();
 			categoryDAO.merge(category);
+			
 
-			add();
 			list();
+			add();
+			category = categoryDAO.search(category.getName(), menu.getCode());
 			Messages.addGlobalInfo("Category saved successfully");
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -103,10 +106,12 @@ public class CategoryBean implements Serializable {
 		try {
 			category = (Category) event.getComponent().getAttributes().get("selectedCategory");
 			CategoryDAO categoryDAO = new CategoryDAO();
+			MenuItemDAO menuItemDAO = new MenuItemDAO();
+			menuItemDAO.delete(category.getCode());
 			categoryDAO.delete(category);
 
 			Messages.addGlobalInfo("Category removed successfully");
-			categories = categoryDAO.list();
+			list();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			Messages.addGlobalError("Error removing category");

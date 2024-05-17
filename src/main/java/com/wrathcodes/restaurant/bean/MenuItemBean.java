@@ -1,6 +1,7 @@
 package com.wrathcodes.restaurant.bean;
 
 import java.io.Serializable;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -67,7 +68,22 @@ public class MenuItemBean implements Serializable {
 			System.out.println("Restaurant: " + menu.getRestaurant().getName());
 			System.out.println("Menu: " + menu.getName());
 			System.out.println("Dishes Total: " + items.size());
-			System.out.println("Dishes: " + items);
+			System.out.println("Dishes: ");
+			System.out.println(items);
+			System.out.println("╭────────────────────────────╮");
+			for (MenuItem item : items) {
+				System.out.println("\n" +
+                    "│ Code: " + item.getCode() + "\n" +
+                    "│ Name: " + item.getName() + "\n" +
+                    "│ Description: " + item.getDescription() + "\n" +
+                    "│ Price: " + item.getPrice() + "\n" +
+                    "│ Available: " + item.getAvailable() + "\n" +
+                    "│ Kitchen: " + item.getKitchen() + "\n" +
+//                    "│ Menu: " + item.getMenu().getName() + "\n" +
+                    "│ Category: " + item.getCategory() );
+//					"");
+			}
+			System.out.println("╰────────────────────────────╯");
 		} catch (RuntimeException e) {
 			Messages.addGlobalError("An error occurred while trying to list the menu items");
 			e.printStackTrace();

@@ -46,4 +46,19 @@ public class MenuItemDAO extends GenericDAO<MenuItem> {
 			session.close();
 		}
 	}
+
+	public void delete(Long categoryCode) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			session.beginTransaction();
+			session.createQuery("delete from MenuItem where category_code = :category_code")
+					.setParameter("category_code", categoryCode).executeUpdate();
+			session.getTransaction().commit();
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
 }
