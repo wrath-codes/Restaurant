@@ -31,6 +31,112 @@
 				</div>
 			</h:form>
 
+			<h:form id="listOrdersForm">
+				<p:panel header="#{customerBean.customer.name} - Orders"
+					styleClass="p-3">
+
+					<p:dataTable id="listCustomerOrders" var="order"
+						value="#{orderBean.orders}" paginator="true" rows="10"
+						paginatorPosition="bottom"
+						emptyMessage="No order found for #{customerBean.customer.name}">:w
+
+						<f:facet name="header">
+							<p:commandButton value="Add"
+								oncomplete="PF('addCustomerOrderDialog').show();"
+								actionListener="#{orderBean.add}"
+								update=":addCustomerOrderForm:addCustomerOrderPanelGrid">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="quantity" sortBy="#{order.quantity}"
+							filterBy="#{order.quantity}">
+							<h:outputText value="#{order.quantity} x" />
+						</p:column>
+
+						<p:column headerText="Item" sortBy="#{order.item.name}"
+							filterBy="#{order.item.name}">
+							<h:outputText value="#{order.item.name}" />
+						</p:column>
+						<p:column headerText="Status" sortBy="#{order.status}"
+							filterBy="#{customer.seatedAt}">
+							<h:outputText value="#{order.status}"
+								rendered="#{order.status eq 'PENDING'}"
+								styleClass="text-orange-500" />
+							<h:outputText value="#{order.status}"
+								rendered="#{order.status eq 'IN_PROGRESS'}"
+								styleClass="text-blue-500" />
+							<h:outputText value="#{order.status}"
+								rendered="#{order.status eq 'READY'}"
+								styleClass="text-green-500" />
+							<h:outputText value="#{order.status}"
+								rendered="#{order.status eq 'CANCELED'}"
+								styleClass="text-red-500" />
+							/>
+						</p:column>
+LOW, MEDIUM, HIGH, FIRST
+
+						<p:column headerText="Priority" sortBy="#{order.priority}"
+							filterBy="#{order.priority}">
+							<h:outputText value="#{order.priority}"
+								rendered="#{order.priority eq 'LOW'}" styleClass="text-blue-500" />
+							<h:outputText value="#{order.priority}"
+								rendered="#{order.priority eq 'MEDIUM'}"
+								styleClass="text-green-500" />
+							<h:outputText value="#{order.priority}"
+								rendered="#{order.priority eq 'HIGH'}"
+								styleClass="text-orange-500" />
+							<h:outputText value="#{order.priority}"
+								rendered="#{order.priority eq 'FIRST'}"
+								styleClass="text-red-500" />
+						</p:column>
+
+						<p:column headerText="Ordered at" sortBy="#{order.orderedAt}">
+							<h:outputText value="#{order.orderedAt}">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
+						</p:column>
+
+
+
+
+						<p:column headerText="Actions">
+							<div class="flex space-x-2">
+								<p:commandButton icon="fa fa-eye" title="View"
+									actionListener="#{customerBean.view}" ajax="false">
+									<f:setPropertyActionListener target="#{customerBean.customer}"
+										value="#{customer}" />
+									<f:attribute name="selectedCustomer" value="#{customer}" />
+								</p:commandButton>
+								<p:commandButton icon="fa fa-pencil" title="Edit"
+									actionListener="#{customerBean.edit}"
+									update=":dialogMessage 
+                                    :addCustomerOrderForm:addCustomerOrderPanelGrid"
+									oncomplete="PF('addCustomerOrderDialog').show();">
+									<f:attribute name="selectedCustomer" value="#{customer}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-trash" title="Delete"
+									actionListener="#{customerBean.delete}"
+									update=":dialogMessage
+                            :listCustomersForm:listCustomers">
+
+									<p:confirm header="Confirmation"
+										message="Are you sure you want to delete this customer?"
+										icon="fa fa-exclamation-triangle" style="font-size: 10px;" />
+									<f:attribute name="selectedCustomer" value="#{customer}" />
+
+								</p:commandButton>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+
+
 		</div>
 	</ui:define>
 </ui:composition>

@@ -59,6 +59,13 @@
 							<h:outputText value=" Table #{customer.seatedAt.number}" />
 						</p:column>
 
+						<p:column headerText="Active" sortBy="#{customer.active}"
+							filterBy="#{customer.active}">
+							<h:outputText
+								value="#{customer.active == 'true' ? 'Yes' : 'No'}"
+								styleClass="#{customer.active == 'true' ? 'text-green-500' : 'text-red-500'}" />
+						</p:column>
+
 						<p:column headerText="Actions">
 							<div class="flex space-x-2">
 								<p:commandButton icon="fa fa-eye" title="View"
@@ -120,6 +127,11 @@
 							<f:selectItems value="#{restaurantTableBean.tables}" var="table"
 								itemValue="#{table}" itemLabel="#{table.number}" />
 						</p:selectOneMenu>
+						
+						<p:outputLabel value="Active" />
+						<p:selectBooleanCheckbox id="active"
+							value="#{customerBean.customer.active}" required="true" />
+
 					</h:panelGrid>
 					<h:panelGrid columns="2">
 						<p:commandButton value="Save"
