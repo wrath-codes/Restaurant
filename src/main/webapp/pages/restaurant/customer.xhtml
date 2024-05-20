@@ -17,40 +17,41 @@
 		<f:metadata>
 			<f:viewParam name="restaurantCode"
 				value="#{customerBean.currentRestaurant.code}" />
-			<f:event type="preRenderView" listener="#{customerBean.list}" />
+			<f:event type="preRenderView" listener="#{orderBean.list}" />
+			<f:event type="preRenderView"
+				listener="#{menuItemBean.list(customerBean.currentRestaurant.code,true)}" />
+				<f:event type="preRenderView" listener="#{orderBean.updateOrderCustomer}" />
 		</f:metadata>
 		<div id="overview" class="bg-gray-900 h-screen">
-			<h:form>
-				<div class="flex space-between">
-					<div class="space-x-2"></div>
-					<div class="space-x-2">
-						<h:outputText value="#{customerBean.currentRestaurant.name} " />
-						<h:outputText
-							value="#{customerBean.currentRestaurant.code} - #{customerBean.customer.name}" />
-					</div>
-				</div>
-			</h:form>
-
 			<h:form id="listOrdersForm">
 				<p:panel header="#{customerBean.customer.name} - Orders"
 					styleClass="p-3">
 
+					<p:toolbar>
+						<p:toolbarGroup align="left">
+								<p:commandButton value="Order" icon="fa fa-plus"
+									oncomplete="PF('addCustomerOrderDialog').show();"
+									actionListener="#{orderBean.add}"
+									update=":addCustomerOrderForm:addCustomerOrderPanelGrid">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+						</p:toolbarGroup>
+
+						<p:toolbarGroup align="right">
+							<p:outputLabel value="Total:  " styleClass="font-bold" />
+							<h:outputText value="#{orderBean.customerOrderTrack.orderTotal}">
+								<f:convertNumber type="currency" currencyCode="BRL" />
+							</h:outputText>
+						</p:toolbarGroup>
+					</p:toolbar>
+
 					<p:dataTable id="listCustomerOrders" var="order"
 						value="#{orderBean.orders}" paginator="true" rows="10"
 						paginatorPosition="bottom"
-						emptyMessage="No order found for #{customerBean.customer.name}">:w
+						emptyMessage="No order found for #{customerBean.customer.name}">
 
-						<f:facet name="header">
-							<p:commandButton value="Add"
-								oncomplete="PF('addCustomerOrderDialog').show();"
-								actionListener="#{orderBean.add}"
-								update=":addCustomerOrderForm:addCustomerOrderPanelGrid">
-								<f:actionListener
-									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-							</p:commandButton>
-						</f:facet>
-
-						<p:column headerText="quantity" sortBy="#{order.quantity}"
+						<p:column headerText="Qtd." sortBy="#{order.quantity}"
 							filterBy="#{order.quantity}">
 							<h:outputText value="#{order.quantity} x" />
 						</p:column>
@@ -59,23 +60,21 @@
 							filterBy="#{order.item.name}">
 							<h:outputText value="#{order.item.name}" />
 						</p:column>
+						status can be PENDING, IN_PROGRESS, READY, CANCELED
 						<p:column headerText="Status" sortBy="#{order.status}"
-							filterBy="#{customer.seatedAt}">
+							filterBy="#{order.status}">
 							<h:outputText value="#{order.status}"
 								rendered="#{order.status eq 'PENDING'}"
-								styleClass="text-orange-500" />
+								styleClass="text-yellow-500" />
 							<h:outputText value="#{order.status}"
 								rendered="#{order.status eq 'IN_PROGRESS'}"
-								styleClass="text-blue-500" />
-							<h:outputText value="#{order.status}"
-								rendered="#{order.status eq 'READY'}"
 								styleClass="text-green-500" />
+							<h:outputText value="#{order.status}"
+								rendered="#{order.status eq 'READY'}" styleClass="text-blue-500" />
 							<h:outputText value="#{order.status}"
 								rendered="#{order.status eq 'CANCELED'}"
 								styleClass="text-red-500" />
-							/>
 						</p:column>
-LOW, MEDIUM, HIGH, FIRST
 
 						<p:column headerText="Priority" sortBy="#{order.priority}"
 							filterBy="#{order.priority}">
@@ -92,9 +91,15 @@ LOW, MEDIUM, HIGH, FIRST
 								styleClass="text-red-500" />
 						</p:column>
 
-						<p:column headerText="Ordered at" sortBy="#{order.orderedAt}">
+						<p:column headerText="When" sortBy="#{order.orderedAt}">
 							<h:outputText value="#{order.orderedAt}">
-								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" />
+								<f:convertDateTime locale="pt_BR" pattern="HH:mm" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Price" sortBy="#{order.item.price}">
+							<h:outputText value="#{order.item.price * order.quantity}">
+								<f:convertNumber type="currency" currencyCode="BRL" />
 							</h:outputText>
 						</p:column>
 
@@ -110,7 +115,7 @@ LOW, MEDIUM, HIGH, FIRST
 									<f:attribute name="selectedCustomer" value="#{customer}" />
 								</p:commandButton>
 								<p:commandButton icon="fa fa-pencil" title="Edit"
-									actionListener="#{customerBean.edit}"
+									actionListener="#{customerBean.editItem}"
 									update=":dialogMessage 
                                     :addCustomerOrderForm:addCustomerOrderPanelGrid"
 									oncomplete="PF('addCustomerOrderDialog').show();">
@@ -119,22 +124,48 @@ LOW, MEDIUM, HIGH, FIRST
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
 
-								<p:commandButton icon="fa fa-trash" title="Delete"
-									actionListener="#{customerBean.delete}"
-									update=":dialogMessage
-                            :listCustomersForm:listCustomers">
 
-									<p:confirm header="Confirmation"
-										message="Are you sure you want to delete this customer?"
-										icon="fa fa-exclamation-triangle" style="font-size: 10px;" />
-									<f:attribute name="selectedCustomer" value="#{customer}" />
-
-								</p:commandButton>
 							</div>
 						</p:column>
 					</p:dataTable>
 				</p:panel>
 			</h:form>
+
+			<p:dialog header="Order - Add" widgetVar="addCustomerOrderDialog"
+				modal="true" resizable="false" draggable="false" showEffect="fade"
+				hideEffect="fade" closable="false">
+				<h:form id="addCustomerOrderForm">
+					<h:panelGrid columns="2" id="addCustomerOrderPanelGrid">
+						<p:outputLabel value="Quantity" />
+						<p:inputText id="itemQuantity" maxlength="50" size="30"
+							value="#{orderBean.order.quantity}" required="true"
+							requiredMessage="O campo Quantity é obrigatório." />
+
+						<p:outputLabel value="Item" />
+						<p:selectOneMenu id="orderItem" value="#{orderBean.order.item}"
+							converter="omnifaces.SelectItemsConverter" required="true"
+							filter="true" filterMatchMode="contains"
+							requiredMessage="O campo Item é obrigatório.">
+							<f:selectItems value="#{menuItemBean.items}" var="item"
+								itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Save" actionListener="#{orderBean.save}"
+							icon="fa fa-check"
+							update=":dialogMessage :addCustomerOrderForm:addCustomerOrderPanelGrid :listOrdersForm:listCustomerOrders">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+						<p:commandButton value=" Close" icon="fa fa-ban"
+							oncomplete="PF('addCustomerOrderDialog').hide();">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
 
 
 		</div>

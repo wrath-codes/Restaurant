@@ -72,6 +72,8 @@
 									actionListener="#{customerBean.view}" ajax="false">
 									<f:setPropertyActionListener target="#{customerBean.customer}"
 										value="#{customer}" />
+									<f:setPropertyActionListener target="#{orderBean.customer}"
+										value="#{customer}" />
 									<f:attribute name="selectedCustomer" value="#{customer}" />
 								</p:commandButton>
 								<p:commandButton icon="fa fa-pencil" title="Edit"

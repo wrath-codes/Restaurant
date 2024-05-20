@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 public class OrderCustomer extends GenericDomain {
 
     @Column(nullable = false, precision = 6, scale = 2)
-    private BigDecimal orderTotal;
+    private BigDecimal orderTotal = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(nullable = false)

@@ -45,11 +45,12 @@
 									<p:toolbarGroup align="left">
 										<p:commandButton value="Dish" icon="fa fa-plus"
 											rendered="#{category.name != 'Default'}"
-											actionListener="#{menuItemBean.add}"
+											actionListener="#{menuItemBean.getCurrentCategoryAndAdd}"
 											update=":listItemsForm:categoryTabView:itemsPanelGroup :listItemsForm:categoryTabView:itemsTable :listItemsForm:categoryTabView"
 											oncomplete="PF('itemDialog').show();">
 											<f:setPropertyActionListener value="#{category}"
 												target="#{menuItemBean.category}" />
+											<f:attribute name="currentCategory" value="#{category}" />
 												<f:actionListener
 													type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 										</p:commandButton>

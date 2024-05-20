@@ -46,15 +46,15 @@
                         <p:commandButton icon="fa fa-trash-alt" style="margin-right: 5px; margin-left: 5px;"
                             actionListener="#{restaurantBean.delete}"
                             update=":dialogMessage :formListRestaurants:restaurantsDataTable">
-                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="fa fa-exclamation-triangle" />
                             <f:attribute name="selectedRestaurant" value="#{restaurantCursor}" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-ban" />
                 </p:confirmDialog>
             </p:panel>
         </h:form>

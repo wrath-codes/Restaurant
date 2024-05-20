@@ -46,6 +46,29 @@ public class MenuItemDAO extends GenericDAO<MenuItem> {
 			session.close();
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MenuItem> list(Long restaurantCode, Boolean available){
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			Criteria menuItemCriteria = session.createCriteria(MenuItem.class);
+			// get restaurant menus available
+			Criteria menuCriteria = menuItemCriteria.createCriteria("menu");
+			menuCriteria.add(Restrictions.eq("restaurant.code", restaurantCode));
+			// only show items from available menus
+			menuCriteria.add(Restrictions.eq("available", true));
+			// only show available items
+			menuItemCriteria.add(Restrictions.eq("available", available));
+			
+			List<MenuItem> result = menuItemCriteria.list();
+			return result;
+		} catch (RuntimeException e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+		
+	}
 
 	public void delete(Long categoryCode) {
 		Session session = HibernateUtil.getSessionFactory().openSession();

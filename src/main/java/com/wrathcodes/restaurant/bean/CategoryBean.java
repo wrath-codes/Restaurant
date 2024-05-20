@@ -56,6 +56,7 @@ public class CategoryBean implements Serializable {
 			category.setDescription("Default Description");
 			category.setMenu(menu);
 			categoryDAO.merge(category);
+			categoryDAO.list(menu.getCode());
 		}
 	}
 

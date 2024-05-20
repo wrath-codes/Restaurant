@@ -9,11 +9,16 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.faces.context.FacesContext;
 
 import org.omnifaces.util.Messages;
 
 import com.wrathcodes.restaurant.dao.CustomerDAO;
+import com.wrathcodes.restaurant.dao.OrderCustomerDAO;
 import com.wrathcodes.restaurant.domain.Customer;
 import com.wrathcodes.restaurant.domain.Restaurant;
 import com.wrathcodes.restaurant.domain.RestaurantTable;
@@ -100,12 +105,18 @@ public class CustomerBean implements Serializable {
 		}
 	}
 
-	public void delete(ActionEvent event) {
+	public void delete(ActionEvent event) throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException {
 		try {
 			customer = (Customer) event.getComponent().getAttributes().get("selectedCustomer");
+			Long customerCode = customer.getCode();
+			
+
+			OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+			orderCustomerDAO.delete(customerCode);
 
 			CustomerDAO customerDAO = new CustomerDAO();
 			customerDAO.delete(customer);
+
 
 			customers = customerDAO.list();
 

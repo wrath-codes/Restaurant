@@ -103,6 +103,23 @@ public class MenuItemBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void list(Long restaurantCode, Boolean available) {
+		try {
+			MenuItemDAO itemDAO = new MenuItemDAO();
+			items = itemDAO.list(restaurantCode, available);
+			System.out.println("Dishes: ");
+			System.out.println(items);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	public void getCurrentCategoryAndAdd(ActionEvent event) {
+		category = (Category) event.getComponent().getAttributes().get("currentCategory");
+		add();
+	}
 
 	public void add() {
 		item = new MenuItem();
