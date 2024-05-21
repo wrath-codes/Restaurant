@@ -6,6 +6,8 @@ import com.wrathcodes.restaurant.domain.Customer;
 import com.wrathcodes.restaurant.domain.OrderCustomer;
 import com.wrathcodes.restaurant.domain.OrderItem;
 import com.wrathcodes.restaurant.domain.TableCheck;
+import com.wrathcodes.restaurant.domain.OrderStatus;
+import com.wrathcodes.restaurant.domain.OrderPriority;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -96,13 +98,13 @@ public class OrderBean implements Serializable {
 	}
 
 	public void add() {
-		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
-		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
-		if (customerOrderTrack == null) {
-			customerOrderTrack = new OrderCustomer();
-			customerOrderTrack.setCustomer(customer);
-			orderCustomerDAO.merge(customerOrderTrack);
-		}
+//		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+//		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
+//		if (customerOrderTrack == null) {
+//			customerOrderTrack = new OrderCustomer();
+//			customerOrderTrack.setCustomer(customer);
+//			orderCustomerDAO.merge(customerOrderTrack);
+//		}
 		order = new OrderItem();
 		order.setOrderCustomer(customerOrderTrack);
 	}
@@ -112,35 +114,98 @@ public class OrderBean implements Serializable {
 		OrderItem latestOrder = orderDAO.getLatest(customerCode);
 		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
 		customerOrderTrack = orderCustomerDAO.search(customerCode);
-		if (latestOrder != null) {
-			customerOrderTrack.setOrderTotal(customerOrderTrack.getOrderTotal().add(latestOrder.getItem().getPrice().multiply(BigDecimal.valueOf(latestOrder.getQuantity()))));
+
+		if (latestOrder != null && customerOrderTrack != null) {
+			customerOrderTrack.setOrderTotal(customerOrderTrack.getOrderTotal()
+					.add(latestOrder.getItem().getPrice().multiply(new BigDecimal(latestOrder.getQuantity()))));
 			orderCustomerDAO.merge(customerOrderTrack);
 		} else {
-			customerOrderTrack.setOrderTotal(BigDecimal.ZERO);
-			orderCustomerDAO.merge(customerOrderTrack);
+			OrderCustomer orderCustomer = new OrderCustomer();
+			orderCustomer.setCustomer(customer);
+			orderCustomer.setOrderTotal(order.getItem().getPrice().multiply(new BigDecimal(order.getQuantity())));
+			orderCustomerDAO.merge(orderCustomer);
+			customerOrderTrack = orderCustomerDAO.search(customerCode);
 		}
+
+		list();
 	}
-	
+
 	public void subtractFromOrderTotal(OrderItem order) {
 		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
 		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
-		customerOrderTrack.setOrderTotal(customerOrderTrack.getOrderTotal().subtract(order.getItem().getPrice()));
+		customerOrderTrack.setOrderTotal(customerOrderTrack.getOrderTotal()
+				.subtract(order.getItem().getPrice().multiply(new BigDecimal(order.getQuantity()))));
 		orderCustomerDAO.merge(customerOrderTrack);
 	}
-	
+
 	public void cancelOrderItem(ActionEvent event) {
 		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		System.out.println("Order: " + order.getItem().getName() + " - " + order.getQuantity() + "x");
 		OrderItemDAO orderDAO = new OrderItemDAO();
 		subtractFromOrderTotal(order);
-		orderDAO.delete(order);
+		orderDAO.changeOrderStatus(order.getCode(), OrderStatus.CANCELED);
 		list();
 	}
 	
+	public void finishOrder(ActionEvent event) {
+		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		orderDAO.changeOrderStatus(order.getCode(), OrderStatus.READY);
+		list();
+	}
+	
+	public void startOrder(ActionEvent event) {
+		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		orderDAO.changeOrderStatus(order.getCode(), OrderStatus.IN_PROGRESS);
+		list();
+	}
+
+	public void increasePriority(ActionEvent event) {
+		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		OrderItemDAO orderDAO = new OrderItemDAO();
+
+		if (order.getPriority() == OrderPriority.MEDIUM) {
+			orderDAO.changeOrderPriority(order, OrderPriority.HIGH);
+		}
+		if (order.getPriority() == OrderPriority.LOW) {
+			orderDAO.changeOrderPriority(order, OrderPriority.MEDIUM);
+		}
+
+		list();
+	}
+
+	public void lowerPriority(ActionEvent event) {
+		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		OrderItemDAO orderDAO = new OrderItemDAO();
+
+		if (order.getPriority() == OrderPriority.MEDIUM) {
+			orderDAO.changeOrderPriority(order, OrderPriority.LOW);
+		}
+		if (order.getPriority() == OrderPriority.HIGH) {
+			orderDAO.changeOrderPriority(order, OrderPriority.MEDIUM);
+		}
+		
+		if (order.getPriority() == OrderPriority.FIRST) {
+			orderDAO.changeOrderPriority(order, OrderPriority.HIGH);
+		}
+
+		list();
+	}
+
+	public void bumpToFirst(ActionEvent event) {
+		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
+		OrderItemDAO orderDAO = new OrderItemDAO();
+
+		orderDAO.changeOrderPriority(order, OrderPriority.FIRST);
+
+		list();
+	}
+
 	public void updateOrderCustomer() {
 		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
 		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
 	}
-	
 
 	public void save() {
 		try {
@@ -148,8 +213,8 @@ public class OrderBean implements Serializable {
 			orderDAO.merge(order);
 
 			add();
-			addToOrderTotal(customer.getCode());
 			list();
+			addToOrderTotal(customer.getCode());
 		} catch (RuntimeException e) {
 			Messages.addGlobalError("An error occurred while trying to save the order");
 			e.printStackTrace();

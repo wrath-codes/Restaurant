@@ -1,6 +1,9 @@
 package com.wrathcodes.restaurant.domain;
 
 import javax.persistence.FetchType;
+
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,6 +22,9 @@ public class Customer extends GenericDomain {
     
     @Column(nullable = false)
     private Boolean active = true;
+    
+    @Column(nullable = false)
+    private Date createdAt     = new Date();
 
     public String getName() {
         return name;
@@ -42,5 +48,13 @@ public class Customer extends GenericDomain {
 	
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+	
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

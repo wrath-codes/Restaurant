@@ -1,6 +1,7 @@
 package com.wrathcodes.restaurant.bean;
 
 import java.io.IOException;
+
 import java.io.Serializable;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import org.omnifaces.util.Messages;
 import com.wrathcodes.restaurant.dao.CustomerDAO;
 import com.wrathcodes.restaurant.dao.OrderCustomerDAO;
 import com.wrathcodes.restaurant.domain.Customer;
+import com.wrathcodes.restaurant.domain.OrderCustomer;
 import com.wrathcodes.restaurant.domain.Restaurant;
 import com.wrathcodes.restaurant.domain.RestaurantTable;
 
@@ -31,6 +33,7 @@ public class CustomerBean implements Serializable {
 	private List<Customer> customers;
 	private RestaurantTable currentTable;
 	private Restaurant currentRestaurant;
+	private OrderCustomer customerOrderTrack;
 
 	public Customer getCustomer() {
 		return customer;
@@ -63,11 +66,31 @@ public class CustomerBean implements Serializable {
 	public void setCurrentRestaurant(Restaurant currentRestaurant) {
 		this.currentRestaurant = currentRestaurant;
 	}
-	
+
+	public OrderCustomer getCustomerOrderTrack() {
+		return customerOrderTrack;
+	}
+
+	public void setCustomerOrderTrack(OrderCustomer customerOrderTrack) {
+		this.customerOrderTrack = customerOrderTrack;
+	}
+
+	public void findCustomerOrderTrack(Long customerCode) {
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		customerOrderTrack = orderCustomerDAO.search(customerCode);
+	}
+
+	public void addCustomerOrderTrack() throws Exception {
+		customerOrderTrack = new OrderCustomer();
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		orderCustomerDAO.attach(currentRestaurant.getCode());
+	}
+
 	public void view(ActionEvent event) throws IOException {
 		try {
 			customer = (Customer) event.getComponent().getAttributes().get("selectedCustomer");
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/customer.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext()
+					.redirect("/Restaurant/pages/restaurant/customer.xhtml");
 		} catch (RuntimeException error) {
 			Messages.addGlobalError("An error occurred while trying to list customers");
 			error.printStackTrace();
@@ -90,14 +113,14 @@ public class CustomerBean implements Serializable {
 		customer.setSeatedAt(currentTable);
 	}
 
-	public void save() {
+	public void save() throws Exception {
 		try {
 			CustomerDAO customerDAO = new CustomerDAO();
 			customerDAO.merge(customer);
 
 			add();
-			customers = customerDAO.list(currentRestaurant.getCode());
 
+			customers = customerDAO.list(currentRestaurant.getCode());
 			Messages.addGlobalInfo("Customer saved successfully");
 		} catch (RuntimeException error) {
 			Messages.addGlobalError("An error occurred while trying to save the customer");
@@ -105,18 +128,17 @@ public class CustomerBean implements Serializable {
 		}
 	}
 
-	public void delete(ActionEvent event) throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException {
+	public void delete(ActionEvent event)
+			throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException {
 		try {
 			customer = (Customer) event.getComponent().getAttributes().get("selectedCustomer");
 			Long customerCode = customer.getCode();
-			
 
 			OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
 			orderCustomerDAO.delete(customerCode);
 
 			CustomerDAO customerDAO = new CustomerDAO();
 			customerDAO.delete(customer);
-
 
 			customers = customerDAO.list();
 

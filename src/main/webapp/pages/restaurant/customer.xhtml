@@ -20,28 +20,30 @@
 			<f:event type="preRenderView" listener="#{orderBean.list}" />
 			<f:event type="preRenderView"
 				listener="#{menuItemBean.list(customerBean.currentRestaurant.code,true)}" />
-				<f:event type="preRenderView" listener="#{orderBean.updateOrderCustomer}" />
+			<f:event type="preRenderView"
+				listener="#{orderBean.updateOrderCustomer}" />
 		</f:metadata>
 		<div id="overview" class="bg-gray-900 h-screen">
 			<h:form id="listOrdersForm">
 				<p:panel header="#{customerBean.customer.name} - Orders"
 					styleClass="p-3">
 
-					<p:toolbar>
+					<p:toolbar id="orderToolbar">
 						<p:toolbarGroup align="left">
-								<p:commandButton value="Order" icon="fa fa-plus"
-									oncomplete="PF('addCustomerOrderDialog').show();"
-									actionListener="#{orderBean.add}"
-									update=":addCustomerOrderForm:addCustomerOrderPanelGrid">
-									<f:actionListener
-										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-								</p:commandButton>
+							<p:commandButton value="Order" icon="fa fa-plus"
+								oncomplete="PF('addCustomerOrderDialog').show();"
+								actionListener="#{orderBean.add}"
+								update=":addCustomerOrderForm:addCustomerOrderPanelGrid">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
 						</p:toolbarGroup>
 
 						<p:toolbarGroup align="right">
 							<p:outputLabel value="Total:  " styleClass="font-bold" />
-							<h:outputText value="#{orderBean.customerOrderTrack.orderTotal}">
-								<f:convertNumber type="currency" currencyCode="BRL" />
+							<h:outputText value="#{orderBean.customerOrderTrack.orderTotal}"
+								id="orderTotal">
+								<f:convertNumber pattern="¤#,##0.00" currencySymbol="R$" />
 							</h:outputText>
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -52,6 +54,7 @@
 						emptyMessage="No order found for #{customerBean.customer.name}">
 
 						<p:column headerText="Qtd." sortBy="#{order.quantity}"
+							width="64px"
 							filterBy="#{order.quantity}">
 							<h:outputText value="#{order.quantity} x" />
 						</p:column>
@@ -60,8 +63,8 @@
 							filterBy="#{order.item.name}">
 							<h:outputText value="#{order.item.name}" />
 						</p:column>
-						status can be PENDING, IN_PROGRESS, READY, CANCELED
 						<p:column headerText="Status" sortBy="#{order.status}"
+						width="120px"
 							filterBy="#{order.status}">
 							<h:outputText value="#{order.status}"
 								rendered="#{order.status eq 'PENDING'}"
@@ -77,6 +80,7 @@
 						</p:column>
 
 						<p:column headerText="Priority" sortBy="#{order.priority}"
+						    width="120px"
 							filterBy="#{order.priority}">
 							<h:outputText value="#{order.priority}"
 								rendered="#{order.priority eq 'LOW'}" styleClass="text-blue-500" />
@@ -85,21 +89,25 @@
 								styleClass="text-green-500" />
 							<h:outputText value="#{order.priority}"
 								rendered="#{order.priority eq 'HIGH'}"
-								styleClass="text-orange-500" />
+								styleClass="text-yellow-500" />
 							<h:outputText value="#{order.priority}"
 								rendered="#{order.priority eq 'FIRST'}"
 								styleClass="text-red-500" />
 						</p:column>
 
-						<p:column headerText="When" sortBy="#{order.orderedAt}">
+						<p:column headerText="When"
+						width="64px"
+						 sortBy="#{order.orderedAt}">
 							<h:outputText value="#{order.orderedAt}">
 								<f:convertDateTime locale="pt_BR" pattern="HH:mm" />
 							</h:outputText>
 						</p:column>
 
-						<p:column headerText="Price" sortBy="#{order.item.price}">
+						<p:column headerText="Price"
+						width="120px"
+						 sortBy="#{order.item.price}">
 							<h:outputText value="#{order.item.price * order.quantity}">
-								<f:convertNumber type="currency" currencyCode="BRL" />
+								<f:convertNumber pattern="¤#,##0.00" currencySymbol="R$" />
 							</h:outputText>
 						</p:column>
 
@@ -108,26 +116,67 @@
 
 						<p:column headerText="Actions">
 							<div class="flex space-x-2">
-								<p:commandButton icon="fa fa-eye" title="View"
-									actionListener="#{customerBean.view}" ajax="false">
-									<f:setPropertyActionListener target="#{customerBean.customer}"
-										value="#{customer}" />
-									<f:attribute name="selectedCustomer" value="#{customer}" />
-								</p:commandButton>
-								<p:commandButton icon="fa fa-pencil" title="Edit"
-									actionListener="#{customerBean.editItem}"
-									update=":dialogMessage 
-                                    :addCustomerOrderForm:addCustomerOrderPanelGrid"
-									oncomplete="PF('addCustomerOrderDialog').show();">
-									<f:attribute name="selectedCustomer" value="#{customer}" />
-									<f:actionListener
-										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								<p:commandButton icon="fa fa-running" title="Start"
+									disabled="#{order.status eq 'IN_PROGRESS' or order.status eq 'CANCELED' or order.status eq 'READY'}"
+									styleClass="ui-button-help"
+									actionListener="#{orderBean.startOrder}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<f:attribute name="selectedOrder" value="#{order}" />
 								</p:commandButton>
 
+								<p:commandButton icon="fa fa-check" title="Finish"
+									disabled="#{order.status eq 'READY' or order.status eq 'CANCELED' or order.status eq 'PENDING'}"
+									styleClass="ui-button-success"
+									actionListener="#{orderBean.finishOrder}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<f:attribute name="selectedOrder" value="#{order}" />
+								</p:commandButton>
 
+								<p:commandButton icon="fa fa-level-up-alt"
+									title="Increase Priority"
+									disabled="#{order.priority eq 'FIRST' or order.status eq 'CANCELED' or order.status eq 'READY' or order.priority eq 'HIGH'}"
+									styleClass="ui-button-info"
+									actionListener="#{orderBean.increasePriority}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<f:attribute name="selectedOrder" value="#{order}" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-level-down-alt"
+									title="Decrease Priority"
+									disabled="#{order.priority eq 'LOW' or order.status eq 'CANCELED' or order.status eq 'READY'}"
+									styleClass="ui-button-info"
+									actionListener="#{orderBean.lowerPriority}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<f:attribute name="selectedOrder" value="#{order}" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-trophy" title="Bump to First"
+									disabled="#{order.priority eq 'FIRST' or order.status eq 'CANCELED' or order.status eq 'READY'}"
+									styleClass="ui-button-warning"
+									actionListener="#{orderBean.bumpToFirst}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<f:attribute name="selectedOrder" value="#{order}" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-ban" title="Cancel"
+									disabled="#{order.status eq 'CANCELED'}"
+									styleClass="ui-button-danger"
+									actionListener="#{orderBean.cancelOrderItem}"
+									update=":dialogMessage :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
+									<p:confirm header="Confirmation"
+										message="Are you sure you want to cancel this order?"
+										icon="fa fa-exclamation-triangle" style="font-size: 10px;" />
+									<f:attribute name="selectedOrder" value="#{order}" />
+								</p:commandButton>
 							</div>
 						</p:column>
 					</p:dataTable>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no" icon="fa fa-ban" />
+					</p:confirmDialog>
 				</p:panel>
 			</h:form>
 
@@ -155,7 +204,7 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Save" actionListener="#{orderBean.save}"
 							icon="fa fa-check"
-							update=":dialogMessage :addCustomerOrderForm:addCustomerOrderPanelGrid :listOrdersForm:listCustomerOrders">
+							update=":dialogMessage :addCustomerOrderForm:addCustomerOrderPanelGrid :listOrdersForm:listCustomerOrders :listOrdersForm:orderTotal">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>

@@ -8,6 +8,8 @@ import org.hibernate.criterion.Restrictions;
 import com.wrathcodes.restaurant.util.HibernateUtil;
 
 import com.wrathcodes.restaurant.domain.OrderItem;
+import com.wrathcodes.restaurant.domain.OrderPriority;
+import com.wrathcodes.restaurant.domain.OrderStatus;
 
 public class OrderItemDAO extends GenericDAO<OrderItem> {
 
@@ -47,6 +49,43 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
 
 		} catch (RuntimeException e) {
 			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public void changeOrderStatus(Long orderItemCode, OrderStatus status) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		org.hibernate.Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			OrderItem orderItem = (OrderItem) session.get(OrderItem.class, orderItemCode);
+			orderItem.setStatus(status);
+			session.update(orderItem);
+			transaction.commit();
+		} catch (RuntimeException error) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw error;
+			}
+		} finally {
+			session.close();
+		}
+	}
+	
+	public void changeOrderPriority(OrderItem orderItem, OrderPriority priority) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		org.hibernate.Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			orderItem.setPriority(priority);
+			session.update(orderItem);
+			transaction.commit();
+		} catch (RuntimeException error) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw error;
+			}
 		} finally {
 			session.close();
 		}
