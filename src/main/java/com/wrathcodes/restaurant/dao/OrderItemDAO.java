@@ -53,7 +53,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
 			session.close();
 		}
 	}
-	
+
 	public void changeOrderStatus(Long orderItemCode, OrderStatus status) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		org.hibernate.Transaction transaction = null;
@@ -72,7 +72,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
 			session.close();
 		}
 	}
-	
+
 	public void changeOrderPriority(OrderItem orderItem, OrderPriority priority) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		org.hibernate.Transaction transaction = null;
@@ -91,4 +91,38 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
 		}
 	}
 
+	// Lists all orders from active customers
+	@SuppressWarnings("unchecked")
+	public List<OrderItem> listAll(Long restaurantCode) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+
+			// order item
+			Criteria orderItemCriteria = session.createCriteria(OrderItem.class);
+
+			// order customer
+			Criteria orderCustomerCriteria = orderItemCriteria.createCriteria("orderCustomer");
+
+			// customer
+			Criteria customerCriteria = orderCustomerCriteria.createCriteria("customer");
+
+			// table
+			Criteria tableCriteria = customerCriteria.createCriteria("seatedAt");
+
+			// restaurant
+
+			tableCriteria.add(Restrictions.eq("restaurant.code", restaurantCode));
+
+			List<OrderItem> result = orderItemCriteria.list();
+
+			System.out.println("All Orders: " + result);
+
+			return result;
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
 }

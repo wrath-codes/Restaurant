@@ -112,6 +112,26 @@ public class CustomerBean implements Serializable {
 		customer = new Customer();
 		customer.setSeatedAt(currentTable);
 	}
+	
+	public void addFromTable(ActionEvent event) {
+		customer = new Customer();
+		currentTable = (RestaurantTable) event.getComponent().getAttributes().get("currentTable");
+		customer.setSeatedAt(currentTable);
+	}
+	
+
+
+	public void post_save() {
+		try {
+			CustomerDAO customerDAO = new CustomerDAO();
+			customerDAO.merge(customer);
+			add();
+			customers = customerDAO.list(currentRestaurant.getCode(), currentTable.getCode());
+		} catch (RuntimeException error) {
+			Messages.addGlobalError("An error occurred while trying to save the customer");
+			error.printStackTrace();
+		}
+	}
 
 	public void save() throws Exception {
 		try {

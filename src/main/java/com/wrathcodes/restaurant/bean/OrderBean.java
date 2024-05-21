@@ -1,13 +1,20 @@
 package com.wrathcodes.restaurant.bean;
 
+import com.wrathcodes.restaurant.dao.CustomerDAO;
 import com.wrathcodes.restaurant.dao.OrderCustomerDAO;
+import javax.faces.context.FacesContext;
 import com.wrathcodes.restaurant.dao.OrderItemDAO;
+import com.wrathcodes.restaurant.dao.RestaurantDAO;
 import com.wrathcodes.restaurant.domain.Customer;
 import com.wrathcodes.restaurant.domain.OrderCustomer;
 import com.wrathcodes.restaurant.domain.OrderItem;
 import com.wrathcodes.restaurant.domain.TableCheck;
 import com.wrathcodes.restaurant.domain.OrderStatus;
+import com.wrathcodes.restaurant.domain.Restaurant;
+import com.wrathcodes.restaurant.domain.RestaurantTable;
 import com.wrathcodes.restaurant.domain.OrderPriority;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +35,7 @@ public class OrderBean implements Serializable {
 	private TableCheck currentTableCheck;
 	private List<TableCheck> tableChecks;
 	private Customer customer;
+	private List<Customer> customers;
 
 	public OrderItem getOrder() {
 		return order;
@@ -85,6 +93,14 @@ public class OrderBean implements Serializable {
 		this.customer = customer;
 	}
 
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
+	}
+
 	@PostConstruct
 	public void list() {
 		try {
@@ -98,13 +114,13 @@ public class OrderBean implements Serializable {
 	}
 
 	public void add() {
-//		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
-//		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
-//		if (customerOrderTrack == null) {
-//			customerOrderTrack = new OrderCustomer();
-//			customerOrderTrack.setCustomer(customer);
-//			orderCustomerDAO.merge(customerOrderTrack);
-//		}
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
+		if (customerOrderTrack == null) {
+			customerOrderTrack = new OrderCustomer();
+			customerOrderTrack.setCustomer(customer);
+			orderCustomerDAO.merge(customerOrderTrack);
+		}
 		order = new OrderItem();
 		order.setOrderCustomer(customerOrderTrack);
 	}
@@ -146,14 +162,14 @@ public class OrderBean implements Serializable {
 		orderDAO.changeOrderStatus(order.getCode(), OrderStatus.CANCELED);
 		list();
 	}
-	
+
 	public void finishOrder(ActionEvent event) {
 		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
 		OrderItemDAO orderDAO = new OrderItemDAO();
 		orderDAO.changeOrderStatus(order.getCode(), OrderStatus.READY);
 		list();
 	}
-	
+
 	public void startOrder(ActionEvent event) {
 		OrderItem order = (OrderItem) event.getComponent().getAttributes().get("selectedOrder");
 		OrderItemDAO orderDAO = new OrderItemDAO();
@@ -185,7 +201,7 @@ public class OrderBean implements Serializable {
 		if (order.getPriority() == OrderPriority.HIGH) {
 			orderDAO.changeOrderPriority(order, OrderPriority.MEDIUM);
 		}
-		
+
 		if (order.getPriority() == OrderPriority.FIRST) {
 			orderDAO.changeOrderPriority(order, OrderPriority.HIGH);
 		}
@@ -207,6 +223,84 @@ public class OrderBean implements Serializable {
 		customerOrderTrack = orderCustomerDAO.search(customer.getCode());
 	}
 
+	public void goToTable(RestaurantTable table) throws IOException {
+		System.out.println("Table: " + table.getNumber());
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		tableOrdersTrack = orderCustomerDAO.search(table.getRestaurant().getCode(), table.getCode());
+		CustomerDAO customerDAO = new CustomerDAO();
+		customers = customerDAO.list(table.getRestaurant().getCode(), table.getCode());
+		customer = customers.get(0);
+		
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/Restaurant/pages/restaurant/table.xhtml");
+	}
+
+	public BigDecimal getCustomerTotal(Customer customer) {
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		OrderCustomer customerOrder = orderCustomerDAO.search(customer.getCode());
+		return customerOrder.getOrderTotal();
+	}
+
+	public Integer getCustomerActiveOrders(Customer customer) {
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		List<OrderItem> orders = orderDAO.list(customer.getCode());
+		Integer activeOrders = 0;
+		for (OrderItem order : orders) {
+			if (order.getStatus() == OrderStatus.IN_PROGRESS || order.getStatus() == OrderStatus.READY) {
+				activeOrders++;
+			}
+		}
+		return activeOrders;
+	}
+
+	public Integer getCustomerPendingOrders(Customer customer) {
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		List<OrderItem> orders = orderDAO.list(customer.getCode());
+		Integer pendingOrders = 0;
+		for (OrderItem order : orders) {
+			if (order.getStatus() == OrderStatus.PENDING) {
+				pendingOrders++;
+			}
+		}
+		return pendingOrders;
+	}
+
+	public Integer getCustomerCanceledOrders(Customer customer) {
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		List<OrderItem> orders = orderDAO.list(customer.getCode());
+		Integer canceledOrders = 0;
+		for (OrderItem order : orders) {
+			if (order.getStatus() == OrderStatus.CANCELED) {
+				canceledOrders++;
+			}
+		}
+		return canceledOrders;
+	}
+
+	public BigDecimal getTableTotal(Long tableCode) {
+		OrderCustomerDAO orderCustomerDAO = new OrderCustomerDAO();
+		List<OrderCustomer> tableOrders = orderCustomerDAO.search(customer.getSeatedAt().getRestaurant().getCode(),
+				tableCode);
+		BigDecimal tableTotal = BigDecimal.ZERO;
+		for (OrderCustomer order : tableOrders) {
+			tableTotal = tableTotal.add(order.getOrderTotal());
+		}
+		return tableTotal;
+	}
+
+	public void loadOrders(Long restaurantCode) throws IOException {
+		OrderItemDAO orderDAO = new OrderItemDAO();
+		RestaurantDAO restaurantDAO = new RestaurantDAO();
+		Restaurant restaurant = restaurantDAO.search(restaurantCode);
+
+		System.out.println("Restaurant: " + restaurant.getName());
+
+		orders = orderDAO.listAll(restaurantCode);
+	}
+
+	public void closeCustomerTab(Customer customer) {
+		
+	}
+
 	public void save() {
 		try {
 			OrderItemDAO orderDAO = new OrderItemDAO();
@@ -215,6 +309,8 @@ public class OrderBean implements Serializable {
 			add();
 			list();
 			addToOrderTotal(customer.getCode());
+			Messages.addGlobalInfo("Order saved successfully");
+
 		} catch (RuntimeException e) {
 			Messages.addGlobalError("An error occurred while trying to save the order");
 			e.printStackTrace();
